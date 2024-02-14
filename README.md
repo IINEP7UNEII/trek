@@ -17,8 +17,4 @@
 <p>Connect with friends and fellow hikers through Trek's social features. Share your hikes, trails, and uploaded media with your network, and discover new routes recommended by others. Compare stats, achievements, and experiences to stay motivated and inspired on your outdoor journey.</p>
 
 <h2>Getting Started</h2>
-<p>To start exploring the world with Trek, simply <a href="#">download the app</a> from the App Store or Google Play Store and sign up for an account. Once logged in, you can begin tracking your hikes, uploading media, and connecting with other users right away.</p>
-
-<p>Join us on Trek and embark on unforgettable outdoor adventures today! 🏞️🥾</p>
-
-<p>For more information and updates, visit our <a href="#">website</a> or follow us on <a href="#">social media</a>.</p>
+<p>Project not yet completed...</p>
