@@ -19,7 +19,7 @@ Traditional social platforms have not capitalized on this aspect of connection; 
 Trek seeks to fill this void by enabling individuals to discover and connect with like-minded people in their immediate surroundings through shared content, transforming fleeting proximity into lasting connections.
 
 ## Current Solutions
-Platforms like Google Maps and Snap Maps provide location-based content sharing, but the content is often limited to being about the place itself. Trek innovates by curating a feed of diverse media shared by individuals in specific locations, reflecting a broader spectrum of interests that may or may not be related to the place they are pinned to.
+Platforms like Google Maps and Snap Maps provide location-based content sharing, but the content is often limited to being about the place itself. Trek innovates by curating a feed of diverse media shared by individuals in specific locations, reflecting a broader spectrum of interests that may or may not be related to the place they are pinned to, but are certainly reflective of the _people_ that inhabit that space.
 
 ## Proposed Solution
 
