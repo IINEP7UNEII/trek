@@ -23,13 +23,7 @@ Platforms like Google Maps and Snap Maps provide location-based content sharing,
 
 ## Proposed Solution
 
-Trek is a cutting-edge platform that merges the concept of a content feed with geographic locations. Here's how it will redefine the way we interact with our surroundings and each other:
-
-- Users are enabled to contribute a variety of content—ranging from links, music, images, to videos—to content-feed 'pins' on the map, but only when they are physically present at that actual 'pin' location. This mechanism ensures that the shared content is a genuine reflection of what people in that locale find interesting and want to share.
-- The map features content-feed pins in diverse settings—everything from conventional urban locations like universities and malls, to off-the-beaten-path places like hiking trails.
-- While browsing is unrestricted, allowing users to view content from any corner of the globe, contribting is deliberately limited to physical presence. This unique approach keeps the local feeds authentic and deeply connected to the pulse of each place.
-- Trek is about discovering people. By offering a platform for users to connect with those nearby who share similar tastes—whether it's a love for the same music, art, or news—Trek paves the way for serendipitous connections and meaningful, potentially lifelong connections, with people of similar interests and tastes as you—it helps you find YOUR PEOPLE!
-
+Trek is an innovative platform that integrates a content feed with geographic locations, redefining our interaction with our surroundings and each other. It allows users to contribute various types of content, including links, music, images, and videos, to specific map 'pins' but only when they are physically at the location. This ensures the authenticity of the content, reflecting the true interests of the local community. The platform's map showcases pins in a range of environments, from bustling urban areas to secluded hiking trails. While anyone can browse content from anywhere in the world, contributing is restricted to those physically present at a pin's location, maintaining the integrity and local relevance of the feeds. Moreover, Trek fosters discovery and connection among users with similar interests, facilitating serendipitous and meaningful relationships. It's a tool for finding "your people," connecting individuals who share similar tastes in media and passions.
 
 ## Target Audience
 Trek is designed for anyone seeking to discover and connect with like-minded individuals in their immediate environment, from students and travelers to local residents and outdoor enthusiasts.
@@ -40,15 +34,11 @@ The scope of Trek extends to a fully interactive web application featuring user 
 We believe the scope is certainly large enough for the work to be split nicely amongst five group members.
 
 ## Features and Epics
-- Content-feed 'pins' on a map in diverse locations, from universities to hiking trails.
-- Location verification: Ensuring content is posted by users who are physically present at the location.
-- Feeds include books, songs, videos, articles, personal thoughts, links—essentially content of any kind.
-- Social Connection: User profiles that allow for connections based on mutual interests in content.
+
+Trek's platform is distinguished by its unique features and epics, which enhance the way we share and connect. It includes content-feed 'pins' positioned across various locations, ranging from the academic ambiance of universities to the serene landscapes of hiking trails. A crucial aspect of Trek is its location verification process, which guarantees that content is shared by users who are actually present at the specific location, ensuring the authenticity of the information. The feeds are diverse, encompassing a wide array of content such as books, songs, videos, articles, personal reflections, and links, essentially allowing for the sharing of any kind of content. Additionally, Trek emphasizes social connection through user profiles that facilitate connections based on shared interests in content, promoting a community of users who are engaged and connected by common tastes and preferences.
 
 ## User Stories
-- As a university student, I want to share my favorite podcast episode on the campus pin so that I can connect with fellow students who share my interests.
-- As an avid hiker, I want to post the music I listen to while on the trail to share the soundtrack of my adventure with others who hike the same path.
-- As someone new to the city, I want to explore the local content feed to find others with similar tastes and potentially make new friends.
+Some example use cases/user stories include a university student who may use Trek to share their favorite podcast episode on their campus pin, aiming to connect with fellow students who share similar interests.  Similarly, an avid hiker might post the music they listen to while exploring trails, sharing the soundtrack of their adventures with others who trek the same paths. This would create a unique, shared experience among hikers, connecting them through the ambiance of their journey. Additionally, individuals new to a city can leverage Trek to delve into the local content feed, discovering others with similar tastes.
 
 ## Technology Overview
 Trek will be a desktop web app built with a React front-end for a smooth and responsive user experience. The back-end will use Springboot with a PostgreSQL database.
