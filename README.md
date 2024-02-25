@@ -1,5 +1,5 @@
 # Trek
-A location-based social network that helps you find people you click with.
+A location-based social network that helps you find people irl that you click with.
 
 ## Abstract
 Trek is an innovative web application that transcends traditional location-based media sharing by allowing users to discover and share content tied to a location without it necessarily being about that location.
