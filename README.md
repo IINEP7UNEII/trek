@@ -1,6 +1,8 @@
 # Trek
 A location-based social network that helps you find people irl that you click with.
 
+By CMPT 276 Group 12: Alex Chen, Daniel Tolsky, Huang Pan, Hamza Qayyum, Saarth Patel.
+
 ## Abstract
 Trek is an innovative web application that transcends traditional location-based media sharing by allowing users to discover and share content tied to a location without it necessarily being about that location.
 
@@ -55,5 +57,10 @@ Data storage for things like photos and videos will be handled using Cloudflare 
 
 For the map, we will be using the Google Maps API.
 
+## GitHub Repository Link
+[https://github.com/IINEP7UNEII/trek](https://github.com/IINEP7UNEII/trek)
+
 ## Conclusion
-Trek reimagines social connectivity by transforming shared digital content into pathways for real-world relationships. It's more than an app—it's a social compass guiding users to discover kindred spirits in the tapestry of everyday locales. By intertwining the physical presence with shared passions, Trek crafts a world where each location is a beacon, calling together communities of shared interests. This platform isn’t just about exploring places; it's about uncovering the hidden potential of connections and the serendipity of finding "your people" amidst the crowd. With Trek, every place tells a story, vibe, and pulse of the people that inhabit it, and, as a participant, enables you to find "your people" at each place.
+Trek reimagines social connectivity by transforming shared digital content into pathways for real-world connections. It's more than an app—it's a social compass guiding users to discover kindred spirits in the tapestry of everyday locales, by intertwining physical presence with shared passions.
+
+With Trek, every place tells a story, vibe, and pulse of the people that inhabit it, and, as a participant, enables you to find "your people" at each place.
