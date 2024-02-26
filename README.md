@@ -28,6 +28,8 @@ Trek is an innovative platform that integrates a content feed with geographic lo
 ## Target Audience
 Trek is designed for anyone seeking to discover and connect with like-minded individuals in their immediate environment, from students and travelers to local residents and outdoor enthusiasts.
 
+However, we do have a specific client as well: one of our group members' cousin was discussing how he's having difficulty making like-minded friends in university. This discussion with him was the inspiration for this project, and he is, thus, our specific client.
+
 ## Project Scope
 The scope of Trek extends to a fully interactive web application featuring user authentication, location verification, real-time content sharing, and robust user profiles that foster connections based on shared content preferences.
 
@@ -41,9 +43,12 @@ Trek's platform is distinguished by its unique features and epics, which enhance
 Some example use cases/user stories include a university student who may use Trek to share their favorite podcast episode on their campus pin, aiming to connect with fellow students who share similar interests.  Similarly, an avid hiker might post the music they listen to while exploring trails, sharing the soundtrack of their adventures with others who trek the same paths. This would create a unique, shared experience among hikers, connecting them through the ambiance of their journey. Additionally, individuals new to a city can leverage Trek to delve into the local content feed, discovering others with similar tastes.
 
 ## Technology Overview
-Trek will be a desktop web app built with a React front-end for a smooth and responsive user experience. The back-end will use Springboot with a PostgreSQL database.
+Trek will be a desktop web app built with a React front-end for a smooth and
+responsive user experience. The back-end will use Springboot with a PostgreSQL
+database.
 
-Data storage for things like photos and videos will be handled using Cloudflare Stream and Cloudflare Images.
+Data storage for things like photos and videos will be handled using Cloudflare Stream
+and Cloudflare Images.
 
 For the map, we will be using the Google Maps API.
 
