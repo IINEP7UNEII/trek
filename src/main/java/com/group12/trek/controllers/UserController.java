@@ -24,7 +24,7 @@ public class UserController
     public String showLoginForm(HttpServletResponse response) 
     {
         response.setStatus(200);
-        return "login"; // Return the name of your login.html file
+        return "login";
     }
 
     // Process the login attempt
@@ -47,7 +47,7 @@ public class UserController
             response.setStatus(423);
             return "login"; 
         }
-        // 3. If successful:
+        // 3. If successful redirect to index
         else
         {
             model.addAttribute("loginSuccess", true); 
