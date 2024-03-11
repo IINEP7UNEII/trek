@@ -15,16 +15,20 @@ public class UserService
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
     
     public List<User> findAll() {
         return userRepository.findAll();
     }
-    
-    public User save(User user) {
-        return userRepository.save(user);
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
-    public Optional<User> findByGeohash(int uid) {
+    public Optional<User> findByUid(int uid) {
         return userRepository.findByUid(uid);
     }
 }
