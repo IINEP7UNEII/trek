@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    :root {
+      --bs-dark: #121212;
+      --bs-dark-bright: #242424;
+      --bs-primary: #bb86fc;
+      --bs-secondary: #03dac6;
+    }
+
+    body {
+      background-color: var(--bs-dark);
+      color: white;
+    }
+
+    .card,
+    .btn,
+    .form-control {
+      background-color: var(--bs-dark-bright);
+      border-color: var(--bs-primary);
+      color: white;
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.75);
+      opacity: 1;
+    }
+
+    a,
+    a:visited {
+      color: var(--bs-primary);
+    }
+
+    a:hover {
+      color: var(--bs-secondary);
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body class="bg-dark text-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Trek</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h2 class="mb-4">User Registration</h2>
+    <div class="card p-4 mb-5">
+      <form action="/register" method="post">
+        <div class="mb-3">
+          Username:<input type="text" class="form-control" id="username" name="username" placeholder="Username"
+            oninput="checkUsername()" required>
+        </div>
+        <div id="usernameMessage"></div>
+        <div class="mb-3">
+          Password:<input type="password" class="form-control" id="password" name="password" placeholder="Password"
+            required>
+        </div>
+        <div class="mb-3">
+          Confirm Password:<input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+            placeholder="Confirm Password" oninput="checkPasswordMatch()" required>
+          <div id="passwordMatchError" class="text-danger d-none">Passwords do not match.</div>
+          <div id="passwordMatchSuccess" class="text-success d-none">Passwords match.</div>
+        </div>
+        <div class="mb-3">
+          Token:<input type="text" class="form-control" name="token" placeholder="Token (for admin)">
+        </div>
+        <a href="/Login" class="btn btn-primary">Back</a>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function checkPasswordMatch() {
+      var password = document.getElementById("password").value;
+      var confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (password !== confirmPassword) {
+        document.getElementById("passwordMatchError").classList.remove("d-none");
+        document.getElementById("passwordMatchSuccess").classList.add("d-none");
+      } else {
+        document.getElementById("passwordMatchError").classList.add("d-none");
+        document.getElementById("passwordMatchSuccess").classList.remove("d-none");
+      }
+    }
+
+    function validateForm() {
+      var password = document.getElementById("password").value;
+      var confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (password !== confirmPassword) {
+        document.getElementById("passwordMatchError").classList.remove("d-none");
+        document.getElementById("passwordMatchSuccess").classList.add("d-none");
+        return false;
+      } else {
+        document.getElementById("passwordMatchError").classList.add("d-none");
+        document.getElementById("passwordMatchSuccess").classList.remove("d-none");
+        return true;
+      }
+    }
+
+    function checkUsername() {
+      var username = $('#username').val();
+      $.ajax({
+        type: 'GET',
+        url: '/checkUsername?username=' + username,
+        success: function (data) {
+          if (data.exists) {
+            $('#usernameMessage').text('Username already exists. Please choose another one.').css('color', 'red');
+          } else {
+            $('#usernameMessage').text('Username available.').css('color', 'green');
+          }
+        },
+        error: function () {
+          $('#usernameMessage').text('Error checking username.').css('color', 'red');
+        }
+      });
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
