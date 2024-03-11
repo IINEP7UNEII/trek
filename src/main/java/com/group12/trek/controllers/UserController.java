@@ -33,13 +33,13 @@ public class UserController
     (@RequestParam Map<String, String> userLogin, HttpServletResponse response, Model model)                   
     {
         // 1. Check if username exits
-        if (!userService.findByUsername(userLogin.get("username")).isEmpty())
+        if (userService.findByUsername(userLogin.get("username")).isEmpty())
         {
             model.addAttribute("loginNoUsernameFound", true); 
             return "login"; 
         }
          // 2. Check if password and username match
-        else if (!userService.findByUsername(userLogin.get("username")).get().getPassword()
+        if (!userService.findByUsername(userLogin.get("username")).get().getPassword()
         .equals(userLogin.get("password"))) 
         {
             model.addAttribute("loginIncorrectPassword", true); 
