@@ -36,13 +36,15 @@ public class UserController
         if (userService.findByUsername(userLogin.get("username")).isEmpty())
         {
             model.addAttribute("loginNoUsernameFound", true); 
+            response.setStatus(404);
             return "login"; 
         }
          // 2. Check if password and username match
         if (!userService.findByUsername(userLogin.get("username")).get().getPassword()
         .equals(userLogin.get("password"))) 
         {
-            model.addAttribute("loginIncorrectPassword", true); 
+            model.addAttribute("loginIncorrectPassword", true);
+            response.setStatus(423);
             return "login"; 
         }
         // 3. If successful:
