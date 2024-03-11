@@ -36,155 +36,93 @@
             color: var(--bs-secondary);
         }
         #map {
-            max-width: 100%; /* Ensures the map is not wider than its container */
-            height: 400px; /* Adjust the height as needed */
-            margin: 0 auto 1rem auto; /* Centers the map and adds space below */
+            max-width: 100%; 
+            height: 400px; 
+            margin: 0 auto 1rem auto; 
             margin-top: 1rem;
-            padding: 0.5rem; /* Adds padding inside the map, adjust as needed */
-            border-radius: 0.25rem; /* Adds rounded corners, adjust as needed */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
-            color: #323232;
+            padding: 0.5rem; 
+            border-radius: 0.25rem; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         </style>
 </head>
 <body class="bg-dark text-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/" style="font-size: 200%;">Trek</a>
-            <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="/">Trek</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </button> -->
-            <div class="container-fluid mt-3">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"  style="float: right;">
-                  <
-                </button>
-              </div>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" th:if="${session.user == null}">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item dropdown" th:if="${session.user != null}">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span th:text="${session.user.username}">Username</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
-        
     </nav>
-    <div class="offcanvas offcanvas-end text-bg-dark " id="demo" style="width: 12%;">
-        <div class="offcanvas-header">
-          <h1 class="offcanvas-title">Trek</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body" id="showLogin">
-            <!-- <button class="btn btn-primary" type="button">Other Buttons&nbsp;</button><br><br> -->
-            <a href="Login.html"><button class="btn btn-secondary" type="button">Login</button></a>
-            <br>
-            <a href="createAccount.html">Create Account</a>
-            
-        </div>
-        <div class="offcanvas-body" id="showLoginTrue">
-                <button class="btn btn-secondary" type="button">Other Buttons</button>
-                <br>
-                <br>
-                <button class="btn btn-primary" type="button">Log out</button>
-        </div>
-      </div>
-      
-    <script>
-        //Have an actual way of checking login for next iteration
-        login = false
-        var OffNoLogin = document.getElementById("showLogin")
-        var OffLogin = document.getElementById("showLoginTrue")
-        if(login) {
-            OffNoLogin.style.visibility = "collapse"
-            OffLogin.style.visibility = "visible"
-        }
-        else{
-            OffNoLogin.style.visibility = "visible"
-            OffLogin.style.visibility = "collapse"
-        }
 
-    </script>  
     <div class="container mt-5">
-        <!-- <h2 class="mb-4">Places</h2>
-        
+        <h2 class="mb-4">Places</h2>
+        <div id="map" style="height: 400px;"></div>
 
-        <div class="card p-4">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item bg-dark" th:each="place : ${places}">
-                    <a th:href="@{/place(placeGeohash=${place.geohash})}" th:text="${place.name}">Place Name</a>
-                </li>
-            </ul>
-        </div> -->
-        
-        <div id="map" style="height: 600px;width:1400px;"></div>
-    </div>
-    <div id="right-sidebar" class="sidebar hidden-sm-down">
-        <div class="sidebar-close">
-            <div class="right-arrow"></div>
+        <div class="mb-4">
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addPlaceForm" aria-expanded="false" aria-controls="addPlaceForm">
+                Add Place
+            </button>
         </div>
 
-        
-   
+        <div class="collapse mb-5" id="addPlaceForm">
+            <div class="card p-4">
+                <form action="/addPlace" method="post">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="latitude" placeholder="Latitude">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="longitude" placeholder="Longitude">
+                    </div>
+                    <!-- Hidden field for geohash -->
+                    <input type="hidden" name="geohash" id="geohashInput">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="name" placeholder="Name">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="description" placeholder="Description">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Place</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="geohash.js"></script>
-    <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
-    <!-- Load Esri Leaflet Geocoder from CDN -->
-    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@3.1.4/dist/esri-leaflet-geocoder.css" crossorigin="" />
-    <script src="https://unpkg.com/esri-leaflet-geocoder@3.1.4/dist/esri-leaflet-geocoder.js" crossorigin=""></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         var places = /*[[${places}]]*/ [];
-        console.log(places); // This should output the list of places in the browser console.
+        console.log(places);
         /*]]>*/
     </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const apiKey = "AAPK2838c89dd8ab4951b95a10661fb99e88dlwG2hDYOGa8aUNDRGD5FyErx8aviob-34ZlOIvQrTDzctt8jmP73MPgf3okuhlb";
             // Initialize map without setting view
             var map = L.map('map');
-            //You all should use a better/faster way of map stuff
-           // var map =L.map('map', {doubleClickZoom: true}).locate({setView: true, maxZoom: 11});
-           var latitiude = 0;
-           var longitude = 0;
-            navigator.geolocation.getCurrentPosition(success)
-            function success(position) {
-                latitude = position.coords.latitude;
-                longitude = position.coords.longitude;
-                console.log("Got current latitude: " + latitude + ", longitude: " + longitude);
-                map.setView([latitude, longitude],11);
-                //L.marker([latitude, longitude]).addTo(map).bindPopup("Current Position. Probably don't want this in the final version");
-            }
-            L.easyButton('fa-home',function(){
-                    map.setView([latitude, longitude], 11);
-                    },'Zoom To Home').addTo(map);
-                
-
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
             
-                //https://developers.arcgis.com/esri-leaflet/samples/geocoding-control/
-                const searchControl = L.esri.Geocoding.geosearch({
-                    position: "topright",
-                    placeholder: "Enter an address or place",
-                    useMapBounds: false,
-                    providers: [
-                    L.esri.Geocoding.arcgisOnlineProvider({
-                        apikey: apiKey,
-                        nearby: {
-                        lat: -33.8688,
-                        lng: 151.2093
-                        }
-                    })
-                    ]
-                }).addTo(map);
-
-                const results = L.layerGroup().addTo(map);
-
-                searchControl.on("results", function (data) {
-                    results.clearLayers();
-                    for (let i = data.results.length - 1; i >= 0; i--) {
-                    results.addLayer(L.marker(data.results[i].latlng));
-                    }
-                });
-
             var bounds = L.latLngBounds(); // Create a LatLngBounds object
 
             // Assuming the places variable is now populated
@@ -202,42 +140,27 @@
 
             // Now fit the map to the bounds of the markers
             map.fitBounds(bounds, {
-                padding: [50, 50] // Optional padding
+                padding: [50, 50]
             });
-
-            var clickLocation = L.popup();
-            function click(e) {
-                clickLocation
-                    .setLatLng(e.latlng)
-                    .setContent(
-                        '<div class="acard p-4 mb-5">'+
-                            '<form action="/addPlace" method="post">'+
-                                '<div class="amb-3">'+
-                                   ' <input type="text" class="form-control" name="geohash" placeholder="Geohash">'+
-                               ' </div>'+
-                                '<div class="amb-3">'+
-                                    '<input type="text" class="form-control" name="name" placeholder="Name"></input>'+
-                                '</div>'+
-                                '<div class="amb-3">'+
-                                    '<input type="text" class="form-control" name="description" placeholder="Description"></input>'+
-                               ' </div>'+
-                                '<button type="submit" class="btn btn-primary">Add Place</button>'+
-                            '</form>'+
-                       ' </div>')
-                    // .setContent("AAAAAA")
-                    .openOn(map);
-            }
-
-            map.on('click', click);
-            
-
         });
 
-       
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('form[action="/addPlace"]');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                var lat = parseFloat(document.querySelector('input[name="latitude"]').value);
+                var lon = parseFloat(document.querySelector('input[name="longitude"]').value);
+
+                var geohash = Geohash.encode(lat, lon, 12);
+                document.getElementById('geohashInput').value = geohash;
+
+                form.submit();
+            });
+        });
     </script>
     
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    
 </body>
 </html>
