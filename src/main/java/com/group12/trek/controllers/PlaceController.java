@@ -4,6 +4,9 @@ import com.group12.trek.models.Place;
 import com.group12.trek.models.PlaceService;
 import com.group12.trek.models.Post;
 import com.group12.trek.models.PostService;
+import com.group12.trek.models.User;
+
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -51,10 +54,8 @@ public class PlaceController {
         model.addAttribute("posts", posts);
         model.addAttribute("placeGeohash", placeGeohash);
         
-        // Fetch the place using the geohash
         placeService.findByGeohash(placeGeohash).ifPresent(place -> {
             model.addAttribute("place", place); // Add the entire place object
-            // If you only need the name, you could just add the name instead:
             // model.addAttribute("placeName", place.getName());
         });
         
@@ -62,14 +63,24 @@ public class PlaceController {
     }
 
     @PostMapping("/addPost")
-    public String addPost(@RequestParam String placeGeohash, @RequestParam String user, @RequestParam String title, @RequestParam String content) {
+    public String addPost(@RequestParam String placeGeohash, @RequestParam String title, @RequestParam String content, HttpSession session) {
+        Object loggedInUser = session.getAttribute("user"); // Get the user from the session
+    
+        if (loggedInUser == null) {
+            // Handle the case where there is no logged-in user
+            return "redirect:/login";
+        }
+    
+        User user = (User) loggedInUser;
+        
         Post post = new Post();
         post.setPlaceGeohash(placeGeohash);
-        post.setUser(user);
+        post.setUser(user.getUsername());
         post.setTitle(title);
         post.setContent(content);
         // Set other properties as needed
         postService.save(post);
-        return "redirect:/place?placeGeohash=" + placeGeohash; // Redirect to the place detail page
+        return "redirect:/place?placeGeohash=" + placeGeohash;
     }
+
 }
