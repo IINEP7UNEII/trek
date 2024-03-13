@@ -36,13 +36,13 @@
             color: var(--bs-secondary);
         }
         #map {
-            max-width: 100%; /* Ensures the map is not wider than its container */
-            height: 400px; /* Adjust the height as needed */
-            margin: 0 auto 1rem auto; /* Centers the map and adds space below */
+            max-width: 100%; 
+            height: 400px; 
+            margin: 0 auto 1rem auto; 
             margin-top: 1rem;
-            padding: 0.5rem; /* Adds padding inside the map, adjust as needed */
-            border-radius: 0.25rem; /* Adds rounded corners, adjust as needed */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Optional: Adds shadow for depth */
+            padding: 0.5rem; 
+            border-radius: 0.25rem; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         </style>
 </head>
@@ -53,33 +53,57 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" th:if="${session.user == null}">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item dropdown" th:if="${session.user != null}">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span th:text="${session.user.username}">Username</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
     <div class="container mt-5">
         <h2 class="mb-4">Places</h2>
-        <div class="card p-4 mb-5">
-            <form action="/addPlace" method="post">
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="geohash" placeholder="Geohash">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="name" placeholder="Name">
-                </div>
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="description" placeholder="Description">
-                </div>
-                <button type="submit" class="btn btn-primary">Add Place</button>
-            </form>
-        </div>
-        <!-- <div class="card p-4">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item bg-dark" th:each="place : ${places}">
-                    <a th:href="@{/place(placeGeohash=${place.geohash})}" th:text="${place.name}">Place Name</a>
-                </li>
-            </ul>
-        </div> -->
         <div id="map" style="height: 400px;"></div>
+
+        <div th:if="${session.user != null && session.user.username == 'admin'}">
+            <div class="mb-4">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addPlaceForm" aria-expanded="false" aria-controls="addPlaceForm">
+                    Add Place
+                </button>
+            </div>
+    
+            <div class="collapse mb-5" id="addPlaceForm">
+                <div class="card p-4">
+                    <form action="/addPlace" method="post">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="latitude" placeholder="Latitude">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="longitude" placeholder="Longitude">
+                        </div>
+                        <!-- Hidden field for geohash -->
+                        <input type="hidden" name="geohash" id="geohashInput">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="name" placeholder="Name">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="description" placeholder="Description">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Place</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -87,7 +111,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         var places = /*[[${places}]]*/ [];
-        console.log(places); // This should output the list of places in the browser console.
+        console.log(places);
         /*]]>*/
     </script>
 
@@ -118,7 +142,22 @@
 
             // Now fit the map to the bounds of the markers
             map.fitBounds(bounds, {
-                padding: [50, 50] // Optional padding
+                padding: [50, 50]
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('form[action="/addPlace"]');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                var lat = parseFloat(document.querySelector('input[name="latitude"]').value);
+                var lon = parseFloat(document.querySelector('input[name="longitude"]').value);
+
+                var geohash = Geohash.encode(lat, lon, 12);
+                document.getElementById('geohashInput').value = geohash;
+
+                form.submit();
             });
         });
     </script>
