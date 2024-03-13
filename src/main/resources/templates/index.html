@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trek - Discover Places</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+
+    <style>
+        :root {
+            --bs-dark: #121212;
+            --bs-dark-bright: #242424;
+            --bs-primary: #bb86fc;
+            --bs-secondary: #03dac6;
+        }
+        body {
+            background-color: var(--bs-dark);
+            color: white;
+        }
+        .card, .btn, .form-control {
+            background-color: var(--bs-dark-bright);
+            border-color: var(--bs-primary);
+            color: white;
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.75);
+            opacity: 1;
+        }
+        a, a:visited {
+            color: var(--bs-primary);
+        }
+        a:hover {
+            color: var(--bs-secondary);
+        }
+        #map {
+            max-width: 100%; 
+            height: 400px; 
+            margin: 0 auto 1rem auto; 
+            margin-top: 1rem;
+            padding: 0.5rem; 
+            border-radius: 0.25rem; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        </style>
+</head>
+<body class="bg-dark text-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Trek</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" th:if="${session.user == null}">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+                    <li class="nav-item dropdown" th:if="${session.user != null}">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span th:text="${session.user.username}">Username</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="mb-4">Places</h2>
+        <div id="map" style="height: 400px;"></div>
+
+        <div th:if="${session.user != null && session.user.username == 'admin'}">
+            <div class="mb-4">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addPlaceForm" aria-expanded="false" aria-controls="addPlaceForm">
+                    Add Place
+                </button>
+            </div>
+    
+            <div class="collapse mb-5" id="addPlaceForm">
+                <div class="card p-4">
+                    <form action="/addPlace" method="post">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="latitude" placeholder="Latitude">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="longitude" placeholder="Longitude">
+                        </div>
+                        <!-- Hidden field for geohash -->
+                        <input type="hidden" name="geohash" id="geohashInput">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="name" placeholder="Name">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="description" placeholder="Description">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Place</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="geohash.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var places = /*[[${places}]]*/ [];
+        console.log(places);
+        /*]]>*/
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map without setting view
+            var map = L.map('map');
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            var bounds = L.latLngBounds(); // Create a LatLngBounds object
+
+            // Assuming the places variable is now populated
+            places.forEach(function(place) {
+                var coords = Geohash.decode(place.geohash);
+                console.log(coords);
+
+                // Create a marker for each place
+                var marker = L.marker([coords.latitude, coords.longitude]).addTo(map);
+                marker.bindPopup('<a href="/place?placeGeohash=' + place.geohash + '">' + place.name + '</a>');
+                
+                // Extend the bounds to include each marker's position
+                bounds.extend([coords.latitude, coords.longitude]);
+            });
+
+            // Now fit the map to the bounds of the markers
+            map.fitBounds(bounds, {
+                padding: [50, 50]
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('form[action="/addPlace"]');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                var lat = parseFloat(document.querySelector('input[name="latitude"]').value);
+                var lon = parseFloat(document.querySelector('input[name="longitude"]').value);
+
+                var geohash = Geohash.encode(lat, lon, 12);
+                document.getElementById('geohashInput').value = geohash;
+
+                form.submit();
+            });
+        });
+    </script>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
