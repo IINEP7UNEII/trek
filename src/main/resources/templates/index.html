@@ -179,7 +179,14 @@
                     ]
                 }).addTo(map);
 
+                const results = L.layerGroup().addTo(map);
 
+                searchControl.on("results", function (data) {
+                    results.clearLayers();
+                    for (let i = data.results.length - 1; i >= 0; i--) {
+                    results.addLayer(L.marker(data.results[i].latlng).bindPopup("Add Post"));
+                    }
+                });
 
             var bounds = L.latLngBounds(); // Create a LatLngBounds object
 
