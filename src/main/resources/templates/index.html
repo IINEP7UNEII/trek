@@ -48,6 +48,15 @@
         .star{
             font-size: 1.5em;
         } 
+
+        .geocoder-control-suggestions .geocoder-control-suggestion {
+            overflow-wrap: break-word;
+            word-break: break-all;
+            overflow: visible;
+            white-space: break-spaces;
+            color: #323232;
+
+        }
         </style>
 </head>
 <body class="bg-dark text-light">
@@ -114,6 +123,10 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="geohash.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+        <!-- Load Esri Leaflet Geocoder from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@3.1.4/dist/esri-leaflet-geocoder.css" crossorigin="" />
+    <script src="https://unpkg.com/esri-leaflet-geocoder@3.1.4/dist/esri-leaflet-geocoder.js" crossorigin=""></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         var places = /*[[${places}]]*/ [];
@@ -124,6 +137,8 @@
     <script>
         var HomeLatitude = 0;
         var HomeLongitude = 0;
+        var CurrLongitude = 0;
+        var CurrLatitude = 0;
         document.addEventListener('DOMContentLoaded', function() {
             //Api key for search function
             const apiKey = "AAPK2838c89dd8ab4951b95a10661fb99e88dlwG2hDYOGa8aUNDRGD5FyErx8aviob-34ZlOIvQrTDzctt8jmP73MPgf3okuhlb";
@@ -139,7 +154,6 @@
                 map.setView([HomeLatitude, HomeLongitude],11);
                 //L.marker([latitude, longitude]).addTo(map).bindPopup("Current Position. Probably don't want this in the final version");
             }
-            console.log("Got current latitude: " + HomeLatitude + ", longitude: " + HomeLongitude);
             L.easyButton('<span class="star">&starf;</span>',function(){
                     map.setView([ HomeLatitude,  HomeLongitude], 11);
                     },'Zoom To Home').addTo(map);
@@ -149,6 +163,24 @@
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
             
+            const searchControl = L.esri.Geocoding.geosearch({
+                    position: "topright",
+                    placeholder: "Enter an address or place",
+                    useMapBounds: false,
+                    zoomToResult: true,
+                    providers: [
+                    L.esri.Geocoding.arcgisOnlineProvider({
+                        apikey: apiKey,
+                        nearby: {
+                        lat: -33.8688,
+                        lng: 151.2093
+                        }
+                    })
+                    ]
+                }).addTo(map);
+
+
+
             var bounds = L.latLngBounds(); // Create a LatLngBounds object
 
             // Assuming the places variable is now populated
@@ -159,7 +191,7 @@
                 // Create a marker for each place
                 var marker = L.marker([coords.latitude, coords.longitude]).addTo(map);
                 marker.bindPopup('<a href="/place?placeGeohash=' + place.geohash + '">' + place.name + '</a>');
-                
+                CurrLatitude = coords.latitude; CurrLongitude = coords.longitude;
                 // Extend the bounds to include each marker's position
                 bounds.extend([coords.latitude, coords.longitude]);
             });
@@ -168,6 +200,14 @@
             map.fitBounds(bounds, {
                 padding: [50, 50]
             });
+
+            map.on('click', function(e){
+                var coord = e.latlng.toString().split(',');
+                CurrLongitude = coord[0].split('(');
+                CurrLatitude = coord[1].split(')');
+                console.log("Got home latitude: " + HomeLatitude + ", longitude: " + HomeLongitude);
+                console.log("Got current longitude: " + CurrLongitude+ ", latitude: " + CurrLatitude);
+        })
         });
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -184,9 +224,7 @@
                 form.submit();
             });
         });
-        document.addEventListener('click', function(){
-            console.log("Got current latitude: " + HomeLatitude + ", longitude: " + HomeLongitude);
-        })
+        
     </script>
     
 
