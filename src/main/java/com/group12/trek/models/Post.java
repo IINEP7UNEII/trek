@@ -28,6 +28,9 @@ public class Post {
     private String title;
     private String content;
     
+
+
+    
     @ManyToOne
     @JoinColumn(name="place_geohash", referencedColumnName="geohash", insertable = false, updatable = false)
     private Place place;
