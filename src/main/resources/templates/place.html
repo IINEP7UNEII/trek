@@ -195,9 +195,9 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
             <a href="/" class="btn btn-secondary">Back to Places</a>
-    
+        
             <!-- Message for users who are not logged in -->
             <div th:if="${session.user == null}">
                 <p style="color: rgba(3, 218, 198, 0.5); font-style: italic; margin-bottom: 0;">Wanna post? <a href="/login" style="color: var(--bs-primary);">Login!</a></p>
