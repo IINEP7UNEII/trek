@@ -209,28 +209,18 @@
     <script type="module" src="link-preview.min.js"></script>
     <script type="module" th:inline="javascript">
         import { getLinkPreview } from './link-preview.min.js';
-
         var posts = /*[[${posts}]]*/ [];
         posts.forEach(function(post) {
-            var proxyUrl = `http://ale6andria.com:2095/getLinkPreview?url=${encodeURIComponent(post.content)}`;
+            getLinkPreview(post.content, {proxyUrl: 'https://corsproxy.io/?'}).then(function(data) {
+                var previewImage = document.getElementById('preview-image-' + post.id);
+                var loadingAnimation = document.getElementById('loading-' + post.id);
+                var linkDescription = previewImage.nextElementSibling;
 
-            fetch(proxyUrl)
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(data) {
-                    var previewImage = document.getElementById('preview-image-' + post.id);
-                    var loadingAnimation = document.getElementById('loading-' + post.id);
-                    var linkDescription = previewImage.nextElementSibling;
-
-                    previewImage.src = data.images[0];
-                    previewImage.style.display = 'block';
-                    linkDescription.style.display = 'block';
-                    loadingAnimation.style.display = 'none'; // Hide the loading animation
-                })
-                .catch(function(error) {
-                    console.error('Error loading link preview for post ' + post.id + ':', error);
-                });
+                previewImage.src = data.images[0];
+                previewImage.style.display = 'block';
+                linkDescription.style.display = 'block';
+                loadingAnimation.style.display = 'none'; // Hide the loading animation
+            })
         });
     </script>
     
