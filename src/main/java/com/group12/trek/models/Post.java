@@ -27,9 +27,10 @@ public class Post {
     private String type;
     private String title;
     private String content;
-    
+    private int vote; // count number of upvote
+
     @ManyToOne
-    @JoinColumn(name="place_geohash", referencedColumnName="geohash", insertable = false, updatable = false)
+    @JoinColumn(name = "place_geohash", referencedColumnName = "geohash", insertable = false, updatable = false)
     private Place place;
 
     public Long getId() {
@@ -111,6 +112,17 @@ public class Post {
     public void setPlace(Place place) {
         this.place = place;
     }
-    
-    
+
+    public int getVote() {
+        return vote;
+    }
+
+    public void setVote(int vote) {
+        this.vote = vote;
+    }
+
+    // upvote
+    public void upVote() {
+        this.vote++;
+    }
 }

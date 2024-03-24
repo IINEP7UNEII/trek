@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,30 +14,39 @@
             --bs-primary: #bb86fc;
             --bs-secondary: #03dac6;
         }
+
         body {
             background-color: var(--bs-dark);
             color: white;
         }
-        .card, .btn, .form-control {
+
+        .card,
+        .btn,
+        .form-control {
             background-color: var(--bs-dark-bright);
             border-color: var(--bs-primary);
             color: white;
         }
+
         .form-control::placeholder {
             color: rgba(255, 255, 255, 0.75);
             opacity: 1;
         }
-        a, a:visited {
+
+        a,
+        a:visited {
             color: var(--bs-primary);
         }
+
         a:hover {
             color: var(--bs-secondary);
         }
 
-                /* Loading animation styles */
-                .loading-animation {
+        /* Loading animation styles */
+        .loading-animation {
             width: 100%;
-            height: 200px; /* Set a fixed height */
+            height: 200px;
+            /* Set a fixed height */
             background: rgba(255, 255, 255, 0.2);
             display: flex;
             justify-content: center;
@@ -46,7 +56,9 @@
         }
 
         @keyframes spinner {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .spinner:before {
@@ -69,21 +81,27 @@
             column-count: 2;
             column-gap: 1rem;
         }
+
         .post-card {
-            display: inline-block; /* Allows the item to break columns */
+            display: inline-block;
+            /* Allows the item to break columns */
             width: 100%;
             margin-bottom: 1rem;
-            break-inside: avoid; /* Prevents the item from being split across columns */
+            break-inside: avoid;
+            /* Prevents the item from being split across columns */
         }
+
         .post-card .card-body {
             padding: 1.0rem;
             background-color: #1e1e1e;
             border-radius: 0.5rem;
         }
+
         .post-title {
             color: white;
             margin-bottom: 0.5rem;
         }
+
         .post-link {
             display: block;
             margin-bottom: 0.5rem;
@@ -96,20 +114,21 @@
             border-radius: 0.5rem;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         }
-        
+
         .link-preview img {
             width: 100%;
             height: auto;
             transition: transform 0.5s ease;
         }
-        
+
         .link-preview:hover img {
             transform: scale(1.05);
         }
-        
+
         .link-description {
             padding: 0.5rem;
-            background: rgba(0, 0, 0, 0.7); /* semi-transparent overlay */
+            background: rgba(0, 0, 0, 0.7);
+            /* semi-transparent overlay */
             color: white;
             position: absolute;
             bottom: 0;
@@ -117,29 +136,57 @@
             transform: translateY(100%);
             transition: transform 0.5s ease;
         }
-        
+
         .link-preview:hover .link-description {
             transform: translateY(0);
         }
-        
+
         .post-card {
             margin-bottom: 2rem;
         }
-        
-/* Responsive layout for smaller screens */
-@media (max-width: 768px) {
+
+        .upvote {
+            width: 24px;
+            height: 24px;
+            border: 0;
+            background: url(/images/up-arrow.png);
+            background-size: 24px;
+        }
+
+        .upvotebtn {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            border: 0;
+            margin-bottom: 8px;
+            margin-left: 10px;
+            background: none;
+        }
+
+        .voteNum{
+            margin-right: 10px;
+            color: var(--bs-secondary);
+        }
+
+        /* .upvotebtn:hover {
+            background-color: aliceblue;
+        } */
+
+        /* Responsive layout for smaller screens */
+        @media (max-width: 768px) {
             .posts-masonry {
                 column-count: 1;
             }
         }
-
     </style>
 </head>
+
 <body class="bg-dark text-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Trek</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -148,10 +195,12 @@
                         <a class="nav-link" href="/login">Login</a>
                     </li>
                     <li class="nav-item dropdown" th:if="${session.user != null}">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <span th:text="${session.user.username}">Username</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink"> <!-- Add .dropdown-menu-end here -->
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end"
+                            aria-labelledby="navbarDropdownMenuLink"> <!-- Add .dropdown-menu-end here -->
                             <li><a class="dropdown-item" href="/logout">Logout</a></li>
                         </ul>
                     </li>
@@ -163,7 +212,7 @@
     <div class="container mt-5">
         <h1 class="mb-4" th:text="${place.name}">Place Name</h1>
         <h2 class="mb-4">Posts</h2>
-    
+
         <div th:if="${session.user != null}" class="card p-4 mb-5">
             <form action="/addPost" method="post">
                 <input type="hidden" class="form-control" name="placeGeohash" th:value="${placeGeohash}">
@@ -176,18 +225,31 @@
                 <button type="submit" class="btn btn-primary">Add Post</button>
             </form>
         </div>
-    
+
         <!-- Masonry-like posts grid -->
         <div class="posts-masonry">
             <div th:each="post : ${posts}" class="post-card card">
                 <div class="card-body">
-                    <h5 class="post-title" th:text="${post.title}">Post Title</h5>
+                    <div class="postinfo" style="display: flex; justify-content: flex-start; align-items: center;">
+                        <h5 class="post-title" th:text="${post.title}" style="margin-left: 10px;">Post Title</h5>
+                        <form action="/upvote" method="post"
+                            th:if="${session.user != null and (votesMap.containsKey(post.id) ? !votesMap.get(post.id) : true)}">
+                            <input type="hidden" name="placeGeohash" th:value="${placeGeohash}">
+                            <input type="hidden" name="postId" th:value="${post.id}" />
+                            <input type="hidden" name="username" th:value="${session.user.username}" />
+                            <button type="submit" class="upvotebtn">
+                                <div title="Upvote" class="upvote"></div>
+                            </button>
+                        </form>
+                    </div>
+                    <div style="height:24px; display: flex; justify-content: flex-end;"><span th:text="'Number of votes: ' + ${post.vote}" class="voteNum">Vote</span></div>
                     <div class="link-preview">
                         <!-- Loading animation placeholder -->
                         <div class="loading-animation spinner" th:id="'loading-' + ${post.id}"></div>
                         <img th:id="'preview-image-' + ${post.id}" src="" alt="Link Preview" style="display: none;">
                         <div class="link-description" style="display: none;">
-                            <a class="post-link" th:href="${post.content}" th:text="${post.content}" target="_blank">Link</a>
+                            <a class="post-link" th:href="${post.content}" th:text="${post.content}"
+                                target="_blank">Link</a>
                             <p style="color: var(--bs-secondary);" th:text="${post.user}">Username</p>
                         </div>
                     </div>
@@ -197,10 +259,11 @@
 
         <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
             <a href="/" class="btn btn-secondary">Back to Places</a>
-        
+
             <!-- Message for users who are not logged in -->
             <div th:if="${session.user == null}">
-                <p style="color: rgba(3, 218, 198, 0.5); font-style: italic; margin-bottom: 0;">Wanna post? <a href="/login" style="color: var(--bs-primary);">Login!</a></p>
+                <p style="color: rgba(3, 218, 198, 0.5); font-style: italic; margin-bottom: 0;">Wanna post? <a
+                        href="/login" style="color: var(--bs-primary);">Login!</a></p>
             </div>
         </div>
     </div>
@@ -209,9 +272,9 @@
     <script type="module" src="link-preview.min.js"></script>
     <script type="module" th:inline="javascript">
         import { getLinkPreview } from './link-preview.min.js';
-        var posts = /*[[${posts}]]*/ [];
-        posts.forEach(function(post) {
-            getLinkPreview(post.content, {proxyUrl: 'https://corsproxy.io/?'}).then(function(data) {
+        var posts = /*[[${posts}]]*/[];
+        posts.forEach(function (post) {
+            getLinkPreview(post.content, { proxyUrl: 'https://corsproxy.io/?' }).then(function (data) {
                 var previewImage = document.getElementById('preview-image-' + post.id);
                 var loadingAnimation = document.getElementById('loading-' + post.id);
                 var linkDescription = previewImage.nextElementSibling;
@@ -223,6 +286,7 @@
             })
         });
     </script>
-    
+
 </body>
+
 </html>
