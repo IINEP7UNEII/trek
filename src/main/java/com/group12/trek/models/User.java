@@ -16,7 +16,7 @@ public class User {
     private Long id;
     
     private String username;
-    private String password; // Note: Storing passwords in plaintext is insecure
+    private String password;
 
     // Getters and setters
     public Long getId() {

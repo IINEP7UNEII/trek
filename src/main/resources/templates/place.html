@@ -212,7 +212,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item" th:if="${session.user == null}">
-                            <a class="nav-link" href="/login">Login</a>
+                            <a class="nav-link" th:href="@{/login(placeGeohash=${placeGeohash})}">Login</a>
                         </li>
                         <li class="nav-item dropdown" th:if="${session.user != null}">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -281,8 +281,7 @@
                 <a href="/" class="btn btn-secondary">Back to Places</a>
                 <!-- Message for users who are not logged in -->
                 <div th:if="${session.user == null}">
-                    <p style="color: rgba(3, 218, 198, 0.5); font-style: italic; margin-bottom: 0;">Wanna post or upvote? <a href="/login" style="color: var(--bs-primary);">Login!</a>
-                    </p>
+                    <p style="color: rgba(3, 218, 198, 0.5); font-style: italic; margin-bottom: 0;">Wanna post or upvote? <a th:href="@{/login(placeGeohash=${placeGeohash})}" style="color: var(--bs-primary);">Login!</a></p></p>
                 </div>
             </div>
         </div>

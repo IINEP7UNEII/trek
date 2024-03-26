@@ -18,25 +18,32 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/login")
-    public String loginPage() {
-        return "login";
+    public ModelAndView loginPage(@RequestParam(required = false) String placeGeohash) {
+        ModelAndView modelAndView = new ModelAndView("login");
+        modelAndView.addObject("placeGeohash", placeGeohash);
+        return modelAndView;
     }
 
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
-
+    
     @PostMapping("/users/login")
-    public ModelAndView loginUser(@RequestParam String username, @RequestParam String password, HttpSession session) {
+    public ModelAndView loginUser(@RequestParam String username, @RequestParam String password, @RequestParam(required = false) String placeGeohash, HttpSession session) {
         User user = userService.findUserByUsername(username);
-
+    
         if (user != null && user.getPassword().equals(password)) {
             session.setAttribute("user", user);
-            return new ModelAndView("redirect:/");
+            if (placeGeohash != null && !placeGeohash.isEmpty()) {
+                return new ModelAndView("redirect:/place?placeGeohash=" + placeGeohash);
+            } else {
+                return new ModelAndView("redirect:/");
+            }
         } else {
             ModelAndView modelAndView = new ModelAndView("login");
             modelAndView.addObject("error", "Invalid username or password.");
+            modelAndView.addObject("placeGeohash", placeGeohash);
             return modelAndView;
         }
     }

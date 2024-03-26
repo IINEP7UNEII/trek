@@ -70,6 +70,7 @@
                     <!-- Success message display -->
                     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
                     <form action="/users/login" method="post">
+                        <input type="hidden" name="placeGeohash" th:value="${placeGeohash}">
                         <!-- Error message display -->
                         <div th:if="${error}" class="alert alert-danger" th:text="${error}">Incorrect username or password.</div>
                         <div class="mb-3">
