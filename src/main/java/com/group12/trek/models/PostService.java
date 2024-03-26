@@ -35,4 +35,21 @@ public class PostService {
             throw new NoSuchElementException("Post with ID " + id + " not found.");
         }
     }
+
+    public Optional<Post> findById(Long id) {
+        return postRepository.findById(id);
+    }
+
+    public void delete(Post post) {
+        postRepository.delete(post);
+    }
+
+    public void deleteById(Long id) {
+        postRepository.deleteById(id);
+    }
+
+    public boolean existsById(Long id) {
+        return postRepository.existsById(id);
+    }
+
 }
