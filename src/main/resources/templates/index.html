@@ -133,15 +133,18 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         var places = /*[[${places}]]*/ [];
-        console.log(places);
+        
         /*]]>*/
     </script>
 
     <script>
+        
         var HomeLatitude = 0;
         var HomeLongitude = 0;
         var CurrLongitude = 0;
         var CurrLatitude = 0;
+        var tempLatitude = 0;
+        var tempLongitude = 0;
         document.addEventListener('DOMContentLoaded', function() {
             //Api key for search function
             const apiKey = "AAPK2838c89dd8ab4951b95a10661fb99e88dlwG2hDYOGa8aUNDRGD5FyErx8aviob-34ZlOIvQrTDzctt8jmP73MPgf3okuhlb";
@@ -187,21 +190,25 @@
                 searchControl.on("results", function (data) {
                     results.clearLayers();
                     for (let i = data.results.length - 1; i >= 0; i--) {
-                    results.addLayer(L.marker(data.results[i].latlng).bindPopup("Add Post"));
+                        tempLatitude = data.results[i].latlng.lat;
+                        tempLongitude = data.results[i].latlng.lng;
+                    results.addLayer(L.marker(data.results[i].latlng).bindPopup(data.results[i].text));
+                    
                     }
+                    
+                    
+                    
                 });
-
+                
             var bounds = L.latLngBounds(); // Create a LatLngBounds object
 
             // Assuming the places variable is now populated
             places.forEach(function(place) {
                 var coords = Geohash.decode(place.geohash);
-                console.log(coords);
 
                 // Create a marker for each place
                 var marker = L.marker([coords.latitude, coords.longitude]).addTo(map);
                 marker.bindPopup('<a href="/place?placeGeohash=' + place.geohash + '">' + place.name + '</a>');
-                CurrLatitude = coords.latitude; CurrLongitude = coords.longitude;
                 // Extend the bounds to include each marker's position
                 bounds.extend([coords.latitude, coords.longitude]);
             });
@@ -217,12 +224,14 @@
                 CurrLatitude = coord[1].split(')');
                 console.log("Got home latitude: " + HomeLatitude + ", longitude: " + HomeLongitude);
                 console.log("Got current longitude: " + CurrLongitude+ ", latitude: " + CurrLatitude);
+                console.log("Got temp longitude: " + tempLongitude+ ", latitude: " + tempLatitude);
         })
         });
 
         document.addEventListener('DOMContentLoaded', function() {
             var form = document.querySelector('form[action="/addPlace"]');
-            form.addEventListener('submit', function(event) {
+            if(form!=null){
+                form.addEventListener('submit', function(event) {
                 event.preventDefault();
 
                 var lat = parseFloat(document.querySelector('input[name="latitude"]').value);
@@ -233,6 +242,8 @@
 
                 form.submit();
             });
+            }
+            
         });
         
     </script>
