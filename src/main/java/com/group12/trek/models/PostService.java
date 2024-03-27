@@ -20,6 +20,10 @@ public class PostService {
         return postRepository.findByPlaceGeohash(placeGeohash);
     }
 
+    public List<Post> findByUsername(String user) {
+        return postRepository.findByUser(user);
+    }
+
     public Post save(Post post) {
         return postRepository.save(post);
     }

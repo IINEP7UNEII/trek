@@ -88,6 +88,34 @@ public class PlaceController {
         return "place";
     }
 
+    @GetMapping("/profile")
+    public String visitProfile(Model model, HttpSession session) {
+        Object loggedInUser = session.getAttribute("user");
+
+        if (loggedInUser != null) {
+            User user = (User) loggedInUser;
+            String username = user.getUsername();
+            Map<Long, Boolean> votesMap = new HashMap<>();
+
+            List<Post> posts = postService.findByUsername(username);
+
+            posts.sort(Comparator.comparingInt(Post::getVote).reversed());
+            model.addAttribute("posts", posts);
+
+            posts.forEach(post -> votesMap.put(post.getId(),
+                    voteService.hasVoted(username, post.getId())));
+            // for (Post post : posts) {
+            // votesMap.put(post.getId(), voteService.hasVoted(username, post.getId()));
+            // }
+            // for (Map.Entry<Long, Boolean> entry : votesMap.entrySet()) {
+            //     System.out.println("Post ID: " + entry.getKey() + ", Has Voted: " + entry.getValue());
+            // }
+            model.addAttribute("votesMap", votesMap);
+        }
+
+        return "profile";
+    }
+
     @PostMapping("/addPost")
     public String addPost(@RequestParam String placeGeohash, @RequestParam String title, @RequestParam String content,
             HttpSession session) {

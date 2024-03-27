@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByPlaceGeohash(String placeGeohash);
+    List<Post> findByUser(String user);
 }

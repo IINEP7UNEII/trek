@@ -76,7 +76,10 @@
                             <span th:text="${session.user.username}">Username</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            <li>
+                                <a class="dropdown-item" href="/profile">Profile</a>
+                                <a class="dropdown-item" href="/logout">Logout</a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
