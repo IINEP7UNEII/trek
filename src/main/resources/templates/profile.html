@@ -220,6 +220,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                                 <li>
+                                    <a class="dropdown-item" th:href="'/profile?username=' + ${session.user.username}">Profile</a>
                                     <a class="dropdown-item" href="/logout">Logout</a>
                                 </li>
                             </ul>
@@ -230,7 +231,7 @@
         </nav>
 
         <div class="container mt-5">
-            <h1 class="mb-4" th:text="${session.user.username}">Username</h1>
+            <h1 class="mb-4" th:text="${user.username}">Username</h1>
             <h2 class="mb-4">Posts</h2>
             <!-- Masonry-like posts grid -->
             <div class="posts-masonry">
@@ -238,10 +239,10 @@
                     <div class="card-body">
                         <div class="postinfo" style="display: flex; justify-content: flex-start; align-items: center;">
                             <h5 class="post-title" th:text="${post.title}" style="margin-left: 10px;">Post Title</h5>
-                            <form action="/upvote" method="post" th:if="${session.user != null and (votesMap.containsKey(post.id) ? !votesMap.get(post.id) : true)}">
+                            <form action="/upvote" method="post" th:if="${(votesMap.containsKey(post.id) ? !votesMap.get(post.id) : true)}">
                                 <input type="hidden" name="placeGeohash" th:value="${post.placeGeohash}">
                                 <input type="hidden" name="postId" th:value="${post.id}" />
-                                <input type="hidden" name="username" th:value="${session.user.username}" />
+                                <input type="hidden" name="username" th:value="${user.username}" />
                                 <button type="submit" class="upvotebtn">
                                     <div title="Upvote" class="upvote"></div>
                                 </button>
@@ -256,8 +257,9 @@
                             <img th:id="'preview-image-' + ${post.id}" src="" alt="Link Preview" style="display: none;">
                             <div class="link-description" style="display: none;">
                                 <a class="post-link" th:href="${post.content}" th:text="${post.content}" target="_blank">Link</a>
-                                <p style="color: var(--bs-secondary);" th:text="${post.user}">Username</p>
-                                <div th:if="${session.user != null && (session.user.username == post.user || session.user.username == 'admin')}" class="edit-delete-buttons">
+                                <p style="color: var(--bs-secondary); margin-bottom: 0.5rem;" th:text="${post.user}">Username</p> <!-- Added margin-bottom -->
+                                <a style="color: var(--bs-secondary); display: block; padding-bottom: 0.5rem;" th:href="'/place?placeGeohash=' + ${post.placeGeohash}" th:text="${post.place.name}">Place</a>
+                                <div th:if="${(session.user != null && session.user.username == 'admin') || (session.user != null && session.user.username == post.user)}" class="edit-delete-buttons">
                                     <button type="button" class="btn btn-sm btn-outline-secondary edit-post-btn" data-bs-toggle="modal" data-bs-target="#editPostModal" th:attr="data-post-id=${post.id},data-post-title=${post.title},data-post-content=${post.content}">Edit</button>
                                     <button type="button" class="btn btn-sm btn-outline-danger delete-post-btn" th:attr="data-post-id=${post.id}">Delete</button>
                                 </div>
@@ -267,11 +269,11 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
-                <a href="/" class="btn btn-secondary">Back to Places</a>
+                <!-- <a href="/" class="btn btn-secondary">Back to Places</a> -->
                 <!-- Message for users who are not logged in -->
-                <div th:if="${session.user == null}">
+                <!-- <div th:if="${session.user == null}">
                     <p style="color: rgba(3, 218, 198, 0.5); font-style: italic; margin-bottom: 0;">Wanna post or upvote? <a th:href="@{/login(placeGeohash=${placeGeohash})}" style="color: var(--bs-primary);">Login!</a></p></p>
-                </div>
+                </div> -->
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

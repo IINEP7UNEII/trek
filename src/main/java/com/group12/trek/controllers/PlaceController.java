@@ -5,6 +5,8 @@ import com.group12.trek.models.PlaceService;
 import com.group12.trek.models.Post;
 import com.group12.trek.models.PostService;
 import com.group12.trek.models.User;
+import com.group12.trek.models.UserRepository;
+import com.group12.trek.models.UserService;
 import com.group12.trek.models.VoteService;
 
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +30,9 @@ public class PlaceController {
 
     @Autowired
     VoteService voteService;
+
+    @Autowired
+    private UserService userService;
 
     // Modify the constructor to include PostService
     public PlaceController(PlaceService placeService, PostService postService) {
@@ -89,12 +94,10 @@ public class PlaceController {
     }
 
     @GetMapping("/profile")
-    public String visitProfile(Model model, HttpSession session) {
-        Object loggedInUser = session.getAttribute("user");
+    public String visitProfile(@RequestParam String username, Model model, HttpSession session) {
+            
+            User user_passed_in = userService.findUserByUsername(username);
 
-        if (loggedInUser != null) {
-            User user = (User) loggedInUser;
-            String username = user.getUsername();
             Map<Long, Boolean> votesMap = new HashMap<>();
 
             List<Post> posts = postService.findByUsername(username);
@@ -111,7 +114,7 @@ public class PlaceController {
             //     System.out.println("Post ID: " + entry.getKey() + ", Has Voted: " + entry.getValue());
             // }
             model.addAttribute("votesMap", votesMap);
-        }
+            model.addAttribute("user", user_passed_in);
 
         return "profile";
     }

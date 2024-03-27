@@ -77,7 +77,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             <li>
-                                <a class="dropdown-item" href="/profile">Profile</a>
+                                <a class="dropdown-item" th:href="'/profile?username=' + ${session.user.username}">Profile</a>
                                 <a class="dropdown-item" href="/logout">Logout</a>
                             </li>
                         </ul>

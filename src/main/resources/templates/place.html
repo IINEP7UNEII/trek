@@ -220,7 +220,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                                 <li>
-                                    <a class="dropdown-item" href="/profile">Profile</a>
+                                    <a class="dropdown-item" th:href="'/profile?username=' + ${session.user.username}">Profile</a>
                                     <a class="dropdown-item" href="/logout">Logout</a>
                                 </li>
                             </ul>
@@ -267,9 +267,11 @@
                             <div class="loading-animation spinner" th:id="'loading-' + ${post.id}"></div>
                             <img th:id="'preview-image-' + ${post.id}" src="" alt="Link Preview" style="display: none;">
                             <div class="link-description" style="display: none;">
+
                                 <a class="post-link" th:href="${post.content}" th:text="${post.content}" target="_blank">Link</a>
-                                <p style="color: var(--bs-secondary);" th:text="${post.user}">Username</p>
-                                <div th:if="${session.user != null && (session.user.username == post.user || session.user.username == 'admin')}" class="edit-delete-buttons">
+                                <a style="color: var(--bs-secondary);" th:href="'/profile?username=' + ${post.user}" th:text="${post.user}">Username</a>
+
+                                <div th:if="${session.user != null && (session.user.username == post.user || session.user.username == 'admin')}" class="edit-delete-buttons" style="padding-top: 15px;">
                                     <button type="button" class="btn btn-sm btn-outline-secondary edit-post-btn" data-bs-toggle="modal" data-bs-target="#editPostModal" th:attr="data-post-id=${post.id},data-post-title=${post.title},data-post-content=${post.content}">Edit</button>
                                     <button type="button" class="btn btn-sm btn-outline-danger delete-post-btn" th:attr="data-post-id=${post.id}">Delete</button>
                                 </div>
