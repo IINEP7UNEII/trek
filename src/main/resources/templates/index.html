@@ -57,6 +57,10 @@
             color: #323232;
 
         }
+
+        #PlacesPopup{
+            color: #323232;
+        }
         </style>
 </head>
 <body class="bg-dark text-light">
@@ -90,39 +94,44 @@
     <div class="container mt-5">
         <h2 class="mb-4">Places</h2>
         <div id="map" style="height: 400px;"></div>
-
+        
         <div th:if="${session.user != null && session.user.username == 'admin'}">
             <div class="mb-4">
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addPlaceForm" aria-expanded="false" aria-controls="addPlaceForm">
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="addPlaceForm"  id="OldPlacesPopup">
                     Add Place
                 </button>
             </div>
-    
-            <div class="collapse mb-5" id="addPlaceForm">
-                <div class="card p-4">
-                    <form action="/addPlace" method="post">
-                        <div class="mb-3">
-                            <input type="text" class="form-control" name="latitude" placeholder="Latitude">
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control" name="longitude" placeholder="Longitude">
-                        </div>
-                        <!-- Hidden field for geohash -->
-                        <input type="hidden" name="geohash" id="geohashInput">
-                        <div class="mb-3">
-                            <input type="text" class="form-control" name="name" placeholder="Name">
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control" name="description" placeholder="Description">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Place</button>
-                    </form>
+ 
+        <div class="modal fade" id="PlacesPopup" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+               
+                    <div class="card p-4">
+                        <div class="mb-3"><a>Add Place to Map</a></div>
+                        <form action="/addPlace" method="post">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="latitude" placeholder="Latitude">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="longitude" placeholder="Longitude">
+                            </div>
+                            <!-- Hidden field for geohash -->
+                            <input type="hidden" name="geohash" id="geohashInput">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="name" placeholder="Name">
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="description" placeholder="Description">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Place</button>
+                        </form>
+                    
                 </div>
+              </div>
             </div>
         </div>
     </div>
     
-
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="geohash.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
@@ -130,21 +139,28 @@
     <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@3.1.4/dist/esri-leaflet-geocoder.css" crossorigin="" />
     <script src="https://unpkg.com/esri-leaflet-geocoder@3.1.4/dist/esri-leaflet-geocoder.js" crossorigin=""></script>
+
     <script th:inline="javascript">
         /*<![CDATA[*/
         var places = /*[[${places}]]*/ [];
-        
-        /*]]>*/
+        var session = /*[[${session}]]*/[];
+        /*]]>*/      
     </script>
 
-    <script>
-        
+    <script type="module">
         var HomeLatitude = 0;
         var HomeLongitude = 0;
         var CurrLongitude = 0;
         var CurrLatitude = 0;
         var tempLatitude = 0;
         var tempLongitude = 0;
+        if(session.user!=undefined&&session.user.username=="admin"){
+            
+                var myModal = new bootstrap.Modal(document.getElementById("PlacesPopup"), {});
+                document.getElementById("OldPlacesPopup").addEventListener("click", function(){myModal.show();});
+            
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             //Api key for search function
             const apiKey = "AAPK2838c89dd8ab4951b95a10661fb99e88dlwG2hDYOGa8aUNDRGD5FyErx8aviob-34ZlOIvQrTDzctt8jmP73MPgf3okuhlb";
@@ -186,14 +202,29 @@
                 }).addTo(map);
 
                 const results = L.layerGroup().addTo(map);
-
+   
                 searchControl.on("results", function (data) {
                     results.clearLayers();
                     for (let i = data.results.length - 1; i >= 0; i--) {
                         tempLatitude = data.results[i].latlng.lat;
                         tempLongitude = data.results[i].latlng.lng;
-                    results.addLayer(L.marker(data.results[i].latlng).bindPopup(data.results[i].text));
-                    
+                        if(session.user!=undefined&&session.user.username=="admin"){
+                            const PlacesButton = document.createElement("p");
+                            PlacesButton.innerHTML ='<a class="link-opacity-100-hover" href="#" >'+data.results[i].text+'</a>';  
+                            PlacesButton.onclick = function(){
+                                document.getElementsByName("latitude")[0].value = tempLatitude;
+                                document.getElementsByName("longitude")[0].value = tempLongitude;
+                                document.getElementsByName("name")[0].value = data.results[i].text;
+                                myModal.show();
+                            }
+                            results.addLayer(L.marker(data.results[i].latlng).bindPopup(PlacesButton));
+                            
+                            
+                        }else{
+                            results.addLayer(L.marker(data.results[i].latlng).bindPopup(data.results[i].text));
+                        }
+                        
+                        console.log(data.results[i]);
                     }
                     
                     
