@@ -18,6 +18,9 @@ public class User {
     private String username;
     private String password;
 
+    private String bio;
+    private String link;
+
     // Getters and setters
     public Long getId() {
         return id;
@@ -42,4 +45,21 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String newBio) {
+        this.bio = newBio;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String newLink) {
+        this.link = newLink;
+    }
 }
+

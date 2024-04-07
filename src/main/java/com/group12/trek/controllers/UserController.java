@@ -66,4 +66,19 @@ public class UserController {
         session.invalidate();
         return "redirect:/";
     }
+
+    @PostMapping("/users/updateProfile")
+    public ModelAndView updateProfile(@RequestParam String bio, @RequestParam String link, HttpSession session, RedirectAttributes redirectAttributes) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            return new ModelAndView("redirect:/login");
+        }
+    
+        userService.updateUserBioAndLink(sessionUser.getUsername(), bio, link);
+        redirectAttributes.addFlashAttribute("success", "Profile updated successfully!");
+        
+        // Append the username as a query parameter in the redirect URL
+        String redirectUrl = String.format("redirect:/profile?username=%s", sessionUser.getUsername());
+        return new ModelAndView(redirectUrl);
+    }
 }
