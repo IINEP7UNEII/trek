@@ -230,7 +230,7 @@
       </form>
     </div> <!-- Masonry-like posts grid -->
     <div th:each="entry : ${postsByDate}"> <br>
-      <h2 th:text="${#dates.format(entry.key, 'dd MMMM yyyy')}"></h2> <!-- Display the date -->
+        <h2 th:text="${#temporals.format(entry.key, 'dd MMMM yyyy')}"></h2> <!-- Display the date -->
                 <br>
                 <div class="posts-masonry">
                     <div th:each="post : ${entry.value}" class="post-card card" th:data-post-id="${post.id}" th:data-post-content="${post.content}">

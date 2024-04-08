@@ -23,6 +23,7 @@ public class Post {
     @Column(name = "user_name") // Renamed column
     private String user;
     private Long timestamp;
+    @Column(name = "post_date")  // Renamed column
     private Date postDate;
     private String type;
     private String title;
