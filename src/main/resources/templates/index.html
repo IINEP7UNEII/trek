@@ -97,7 +97,7 @@
         
         <div th:if="${session.user != null && session.user.username == 'admin'}">
             <div class="mb-4">
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="addPlaceForm"  id="OldPlacesPopup">
+                <button hidden class="btn btn-primary" type="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="addPlaceForm"  id="OldPlacesPopup" >
                     Add Place
                 </button>
             </div>
@@ -172,9 +172,7 @@
             function success(position) {
                 HomeLatitude = position.coords.latitude;
                 HomeLongitude = position.coords.longitude;
-                //console.log("Got current latitude: " + HomeLatitude + ", longitude: " + HomeLongitude);
                 map.setView([HomeLatitude, HomeLongitude],11);
-                //L.marker([latitude, longitude]).addTo(map).bindPopup("Current Position. Probably don't want this in the final version");
             }
             L.easyButton('<span class="star">&target;</span>',function(){
                     map.setView([ HomeLatitude,  HomeLongitude], 11);
@@ -224,7 +222,7 @@
                             results.addLayer(L.marker(data.results[i].latlng).bindPopup(data.results[i].text));
                         }
                         
-                        console.log(data.results[i]);
+                        
                     }
                     
                     
@@ -250,12 +248,23 @@
             });
 
             map.on('click', function(e){
-                var coord = e.latlng.toString().split(',');
-                CurrLongitude = coord[0].split('(');
-                CurrLatitude = coord[1].split(')');
-                console.log("Got home latitude: " + HomeLatitude + ", longitude: " + HomeLongitude);
-                console.log("Got current longitude: " + CurrLongitude+ ", latitude: " + CurrLatitude);
-                console.log("Got temp longitude: " + tempLongitude+ ", latitude: " + tempLatitude);
+                var latlng = map.mouseEventToLatLng(e.originalEvent);
+                CurrLongitude = parseFloat(latlng.lng);
+                CurrLatitude = parseFloat(latlng.lat);
+                if(session.user!=undefined&&session.user.username=="admin"){
+                            results.clearLayers();
+                            const PlacesButton = document.createElement("p");
+                            PlacesButton.innerHTML ='<a class="link-opacity-100-hover" href="#" >'+'Add a Place'+'</a>';  
+                            PlacesButton.onclick = function(){
+                                document.getElementsByName("latitude")[0].value = latlng.lat;
+                                document.getElementsByName("longitude")[0].value = latlng.lng;
+                                document.getElementsByName("name")[0].value = "";
+                                myModal.show();
+                            }
+                            results.addLayer(L.marker(latlng).bindPopup(PlacesButton));
+                            
+                            
+                        }
         })
         });
 
