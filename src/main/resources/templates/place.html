@@ -232,17 +232,39 @@
         <div class="container mt-5">
             <h1 class="mb-4" th:text="${place.name}">Place Name</h1>
             <h2 class="mb-4">Posts</h2>
-            <div th:if="${session.user != null}" class="card p-4 mb-5">
-                <form action="/addPost" method="post">
-                    <input type="hidden" class="form-control" name="placeGeohash" th:value="${placeGeohash}">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" name="title" placeholder="Title">
+            <div class="row">
+                <div class="col-md-8">  <div th:if="${session.user != null}" class="card p-4 mb-5">
+                    <h3>Add New Post</h3>
+                    <form action="/addPost" method="post">
+                        <input type="hidden" class="form-control" name="placeGeohash" th:value="${placeGeohash}">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="title" placeholder="Title">
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" name="content" placeholder="Link" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Post</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">  
+                <div class="card p-4 mb-5">
+                    <h3>Order Posts</h3>
+                    <div class="form-group">
+                        <select class="form-control" id="order-select">
+                            <option value="time">Time Posted</option>
+                            <option value="votes">Number of Upvotes</option>
+                            <option value="title">Title Name</option>
+                        </select>
                     </div>
-                    <div class="mb-3">
-                        <textarea class="form-control" name="content" placeholder="Link" rows="3"></textarea>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <select class="form-control" id="order-direction-select">
+                            <option value="up">Ascending</option>
+                            <option value="down">Descending</option>
+                        </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Post</button>
-                </form>
+                    <button type="submit" class="btn btn-secondary" style="margin-top: 64px;">Refresh</button>
+                </div>
             </div>
             <!-- Masonry-like posts grid -->
             <div class="posts-masonry">
