@@ -1,5 +1,7 @@
 package com.group12.trek.models;
 
+import com.group12.trek.models.Post;
+import com.group12.trek.models.PostRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
