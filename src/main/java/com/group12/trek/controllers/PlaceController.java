@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -131,10 +132,13 @@ public class PlaceController {
 
         User user = (User) loggedInUser;
 
+        LocalDate date = LocalDate.now();
+
         Post post = new Post();
         post.setPlaceGeohash(placeGeohash);
         post.setUser(user.getUsername());
         post.setTitle(title);
+        post.setPostDate(date);
         post.setContent(content);
         // Set other properties as needed
         postService.save(post);

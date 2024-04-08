@@ -1,6 +1,6 @@
 package com.group12.trek.models;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +23,7 @@ public class Post {
     @Column(name = "user_name") // Renamed column
     private String user;
     private Long timestamp;
-    private Date postDate;
+    private LocalDate postDate;
     private String type;
     private String title;
     private String content;
@@ -73,11 +73,11 @@ public class Post {
         this.timestamp = timestamp;
     }
 
-    public Date getPostDate() {
+    public LocalDate getPostDate() {
         return postDate;
     }
 
-    public void setPostDate(Date postDate) {
+    public void setPostDate(LocalDate postDate) {
         this.postDate = postDate;
     }
 
