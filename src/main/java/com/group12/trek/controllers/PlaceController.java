@@ -5,7 +5,6 @@ import com.group12.trek.models.PlaceService;
 import com.group12.trek.models.Post;
 import com.group12.trek.models.PostService;
 import com.group12.trek.models.User;
-import com.group12.trek.models.UserRepository;
 import com.group12.trek.models.UserService;
 import com.group12.trek.models.VoteService;
 
