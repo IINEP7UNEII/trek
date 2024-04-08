@@ -314,8 +314,83 @@
         <script type="module" src="link-preview.min.js"></script>
         <script type="module" th:inline="javascript">
             import { getLinkPreview } from './link-preview.min.js';
-        
+
             var posts = /*[[${posts}]]*/ [];
+
+            const refreshButton = document.querySelector('.btn-secondary');
+            const orderSelect = document.getElementById('order-select');
+            const orderDirectionSelect = document.getElementById('order-direction-select');
+
+            refreshButton.addEventListener('click', function(event) {
+                event.preventDefault(); 
+
+                const selectedOrder = orderSelect.value;
+                const selectedDirection = orderDirectionSelect.value;
+
+                // Sort the 'posts' array directly
+                sortPosts(posts, selectedOrder, selectedDirection);
+
+                // Update the HTML based on the sorted 'posts' array
+                updatePostsDisplay(posts); 
+            });
+
+            // This sorting function is working and correctly sorting the posts array based oinwhat the user selects.
+            // I've added console.log(postsArray) to see the array after it has been sorted and it is working correctly
+            function sortPosts(postsArray, order, direction) {
+                if (order === 'time') {
+                    // Sort by timestamp or a 'timePosted' property of the post objects
+                    postsArray.sort((a, b) => direction === 'up' ? a.timePosted - b.timePosted : b.timePosted - a.timePosted); 
+                    console.log(postsArray);
+                } else if (order === 'votes') {
+                    // Sort by the 'numberOfUpvotes' property or similar
+                    postsArray.sort((a, b) => direction === 'up' ? a.numberOfUpvotes - b.numberOfUpvotes : b.numberOfUpvotes - a.numberOfUpvotes); 
+                    console.log(postsArray);
+                } else if (order === 'title') {
+                    // Sort alphabetically 
+                    postsArray.sort((a, b) => direction === 'up' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)); 
+                    console.log(postsArray);
+                }
+            }
+
+            // This is the funciton that must be modified in conjunction with the generatePostHtml function to display
+            // the new posts. Because we are using thymeleaf to display the induvidual posts, we have to manually create a new
+            // way of displaying the posts in HTML since we cannot use thymeleaf in javascript as it is server sided.
+            function updatePostsDisplay(postsArray) {
+                const postsContainer = document.querySelector('.posts-masonry');
+                postsContainer.innerHTML = ''; // Clear existing posts
+
+                postsArray.forEach(post => {
+                    // Create a temporary container to hold the generated Thymeleaf fragment
+                    const tempContainer = document.createElement('div');
+                    tempContainer.innerHTML = generatePostHtml(post);
+
+                    // Extract the first child element (the generated post card)
+                    const postCard = tempContainer.firstChild; 
+
+                    postsContainer.appendChild(postCard); 
+                });
+            }
+
+            // function generatePostHtml(post) {
+            //     return `
+            //         <div class="post-card card">
+            //             <div class="card-body">
+            //                 <div class="postinfo" style="display: flex; justify-content: flex-start; align-items: center;">
+            //                     <h5 class="post-title" style="margin-left: 10px;">${post.title}</h5> 
+            //                     <form action="/upvote" method="post" th:if="${session.user != null and (votesMap.containsKey(post.id) ? !votesMap.get(post.id) : true)}">
+            //                         <input type="hidden" name="placeGeohash" th:value="${placeGeohash}">
+            //                         <input type="hidden" name="postId" th:value="${post.id}" />
+            //                         <input type="hidden" name="username" th:value="${session.user.username}" />
+            //                         <button type="submit" class="upvotebtn">
+            //                             <div title="Upvote" class="upvote"></div>
+            //                         </button>
+            //                     </form>
+            //                 </div>
+            //                 </div>
+            //         </div>
+            //     `;    
+            // }
+
             posts.forEach(function(post) {
                 getLinkPreview(post.content, {
                     proxyUrl: 'https://corsproxy.io/?'
