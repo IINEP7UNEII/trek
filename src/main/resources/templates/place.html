@@ -202,6 +202,11 @@
             column-count: 1;
         }
     }
+
+    div.wrapper-flex {
+    display: flex;
+    flex-wrap:nowrap; /* this is default */
+    }
   </style>
 </head>
 
@@ -229,6 +234,7 @@
         <div class="mb-3"> <textarea class="form-control" name="content" placeholder="Link" rows="3"></textarea> </div> <button type="submit" class="btn btn-primary">Add Post</button>
       </form>
     </div> <!-- Masonry-like posts grid -->
+
     <div th:each="entry : ${postsByDate}"> <br>
         <h2 th:text="${#temporals.format(entry.key, 'dd MMMM yyyy')}"></h2> <!-- Display the date -->
                 <br>
@@ -257,13 +263,19 @@
                                     <a class="post-link" th:href="${post.content}" th:text="${post.content}" target="_blank">Link</a>
                                     <a style="color: var(--bs-secondary);" th:href="'/profile?username=' + ${post.user}" th:text="${post.user}">Username</a>
                                     
-                                    <div th:if="${session.user != null && (session.user.username == post.user || session.user.username == 'admin')}" class="edit-delete-buttons" style="padding-top: 15px;">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary edit-post-btn" data-bs-toggle="modal" data-bs-target="#editPostModal" th:attr="data-post-id=${post.id},data-post-title=${post.title},data-post-content=${post.content}">Edit</button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger delete-post-btn" th:attr="data-post-id=${post.id}">Delete</button>
+                                    <div class='wrapper-flex' >
+                                        <div th:if="${session.user != null && (session.user.username == post.user || session.user.username == 'admin')}" class="edit-delete-buttons" style="padding-top: 15px;">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary edit-post-btn" data-bs-toggle="modal" data-bs-target="#editPostModal" th:attr="data-post-id=${post.id},data-post-title=${post.title},data-post-content=${post.content}">Edit</button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger delete-post-btn" th:attr="data-post-id=${post.id}">Delete</button>
+                                        </div>
+                                        <span class="comment-button" style="padding-top: 15px;margin-left: auto;">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary comment-post-btn" data-bs-toggle="modal" data-bs-target="#commentPostModal" th:attr="data-post-id=${post.id},data-post-title=${post.title},data-post-content=${post.content},placeGeohash=${placeGeohash}">Comments</button>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -289,7 +301,7 @@
                 document.querySelectorAll('.post-card').forEach(function(card) {
                     const postId = card.dataset.postId; // Use dataset to access data-post-id
                     const postContent = card.dataset.postContent; // Use dataset to access data-post-content
-        
+                    
                     getLinkPreview(postContent, {
                         proxyUrl: 'https://corsproxy.io/?'
                     }).then(function(data) {
@@ -319,6 +331,8 @@
                     previewImage.style.display = 'block';
                 }
             }
+
+        
         </script>
         
         <div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="editPostModalLabel" aria-hidden="true">
@@ -363,6 +377,50 @@
                 </div>
             </div>
         </div>
+        
+        <div th:each="entry : ${postsByDate}"> <br>
+        
+        <div class="modal fade" id="commentPostModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true" th:each="post : ${entry.value}" th:data-post-id="${post.id}" >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commentPostModalLabel">Comments</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <a>Comments would ideally go here</a>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="addCommentBtn" data-bs-target="#addCommentForm" data-bs-toggle="collapse" aria-expanded="false" aria-controls="addCommentForm">Add Comment</button>
+                        <a id="NoLoginComment" style="visibility: collapse;">Login to comment on posts.</a>
+                    </div>
+                    <div class="modal-footer">
+                
+                        <div class="collapse mb-3" id="addCommentForm">
+                            <div class="mb-3" th:if="${session.user != null}">
+                                <form action="/addComment" method="post">
+                                    
+                                    <textarea name="content" style="float: left;" rows="5" cols="40" class="form-control" id="exampleFormControlTextarea1" > </textarea>
+                                    <input type="hidden" name="placeGeohash" th:value="${placeGeohash}"></input>
+                                    <input type="hidden" name="PostId" th:value="${post.id}"></input>
+                                    <input type="hidden" name="username" th:value="${session.user.username}"></input>
+                                    <button type="submit" class="btn btn-primary" style="float: right;" >Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                
+                    </div>
+                </div>
+            </div>
+        </div>
+                                
+    </div>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            var session = /*[[${session}]]*/[];
+            var comment = /*[[${comments}]]*/[];
+            /*]]>*/      
+        </script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 var editPostModalElement = document.getElementById('editPostModal');
@@ -401,7 +459,31 @@
                         form.submit();
                     }
                 });
+                document.querySelectorAll('.comment-post-btn').forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        var postId = button.getAttribute('data-post-id');
+                        var postTitle = button.getAttribute('data-post-title');
+                        var postContent = button.getAttribute('data-post-content');
+                        
+                        // Set the post title in the modal
+                        document.getElementById('commentPostModalLabel').innerText = "Comments for "+ postTitle;
+                        document.getElementsByName('CommentDate').value=Date();
+                        // Here you can do whatever you need with postId, postTitle, postContent
+                        // For now, let's just log them to console
+                        console.log("Post ID:", postId);
+                        console.log("Post Title:", postTitle);
+                        console.log("Post Content:", postContent);
+                        if(session.user==undefined){
+                            document.getElementById('addCommentBtn').style.visibility="collapse";
+                            document.getElementById('NoLoginComment').style.visibility="visible";
+                        }
+                            
+                        
+                    });
+                });
+
             });
+            
         </script>
     </body>
 </html>

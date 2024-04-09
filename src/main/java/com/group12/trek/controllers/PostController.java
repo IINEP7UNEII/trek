@@ -49,4 +49,5 @@ public class PostController {
         }
         return "redirect:/place?placeGeohash=" + post.getPlaceGeohash();
     }
+
 }
