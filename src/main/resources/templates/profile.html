@@ -232,8 +232,21 @@
 
         <div class="container mt-5">
             <h1 class="mb-4" th:text="${user.username}">Username</h1>
-            <h2 class="mb-4">Posts</h2>
+            <!-- Bio and Link -->
+            <div th:if="${user.link != null || user.bio != null}" class="card mb-3">
+                <div class="card-body">
+                    <p class="card-text" th:text="${user.bio}">Your bio goes here...</p>
+                    <a th:href="${user.link}" th:text="${user.link}" target="_blank" class="btn btn-primary">Visit Link</a>
+                </div>
+            </div>
+            <div th:if="${session.user != null && session.user.username == user.username}">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addInfoModal" th:data-user-bio="${user.bio}" th:data-user-link="${user.link}">
+                    Edit Link and Bio
+                </button>
+            </div>
+            <br>
             <!-- Masonry-like posts grid -->
+            <h2 class="mb-4">Posts</h2>
             <div class="posts-masonry">
                 <div th:each="post : ${posts}" class="post-card card">
                     <div class="card-body">
@@ -276,12 +289,41 @@
                 </div> -->
             </div>
         </div>
+
+        <!-- Edit bio and link Modal -->
+        <div class="modal fade" id="addInfoModal" tabindex="-1" aria-labelledby="addInfoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="background-color: var(--bs-dark-bright); color: white;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addInfoModalLabel">Add Information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Updated form action and method -->
+                        <form action="/users/updateProfile" method="post">
+                            <input type="hidden" name="username" value="${session.user.username}"/>
+                            <div class="mb-3">
+                                <label for="userLink" class="form-label">Your Link</label>
+                                <!-- Make sure to set name attributes -->
+                                <input type="url" class="form-control" id="userLink" name="link" placeholder="Enter your link">
+                            </div>
+                            <div class="mb-3">
+                                <label for="userBio" class="form-label">Your Bio</label>
+                                <!-- Make sure to set name attributes -->
+                                <textarea class="form-control" id="userBio" name="bio" rows="3" placeholder="Enter your bio"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script type="module" src="link-preview.min.js"></script>
         <script type="module" th:inline="javascript">
-            import {
-                getLinkPreview
-            } from './link-preview.min.js';
+            import { getLinkPreview } from './link-preview.min.js';
+        
             var posts = /*[[${posts}]]*/ [];
             posts.forEach(function(post) {
                 getLinkPreview(post.content, {
@@ -290,13 +332,43 @@
                     var previewImage = document.getElementById('preview-image-' + post.id);
                     var loadingAnimation = document.getElementById('loading-' + post.id);
                     var linkDescription = previewImage.nextElementSibling;
+        
+                    // Clear the loading animation once the image is loaded
+                    previewImage.onload = function() {
+                        loadingAnimation.style.display = 'none';
+                    };
+        
+                    // Set the image source as usual
                     previewImage.src = data.images[0];
                     previewImage.style.display = 'block';
                     linkDescription.style.display = 'block';
-                    loadingAnimation.style.display = 'none';
-                })
+                }).catch(function() {
+                    // If the getLinkPreview fails, show the question mark
+                    displayFallbackImage(post.id);
+                });
+        
+                // Set a timeout fallback if the image does not load within 5 seconds.
+                setTimeout(function() {
+                    var previewImage = document.getElementById('preview-image-' + post.id);
+                    if (previewImage && !previewImage.complete) {
+                        // If the image hasn't loaded, show the fallback question mark
+                        displayFallbackImage(post.id);
+                    }
+                }, 5000); // 5000ms = 5 seconds
             });
-        </script>
+        
+            function displayFallbackImage(postId) {
+                var previewImage = document.getElementById('preview-image-' + postId);
+                var loadingAnimation = document.getElementById('loading-' + postId);
+                loadingAnimation.style.display = 'none';
+                previewImage.src = 'images/question_mark.png'; // Path to your question mark image
+                previewImage.style.display = 'block';
+                var linkDescription = previewImage.nextElementSibling;
+                if (linkDescription) {
+                    linkDescription.style.display = 'block';
+                }
+            }
+        </script> 
         <div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="editPostModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -377,7 +449,56 @@
                         form.submit();
                     }
                 });
-            });
+
+                var addInfoModalElement = document.getElementById('addInfoModal');
+    var addInfoModal = bootstrap.Modal.getOrCreateInstance(addInfoModalElement);
+
+    // Listen for the modal opening
+    addInfoModalElement.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var userBio = button.getAttribute('data-user-bio'); // Extract info from data-* attributes
+        var userLink = button.getAttribute('data-user-link');
+
+        // Update the form fields
+        document.getElementById('userBio').value = userBio;
+        document.getElementById('userLink').value = userLink;
+    });
+
+
+            }); 
+
+
+
+                document.getElementById('add-info-form').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    const userLink = document.getElementById('userLink').value;
+                    const userBio = document.getElementById('userBio').value;
+
+                    // Send data to your server via AJAX
+                    fetch('/users/updateProfile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // Include credentials if your endpoint requires authentication
+                            'Credentials': 'include'
+                        },
+                        body: JSON.stringify({ link: userLink, bio: userBio }),
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                        window.location.reload(); // Reload the page to see the changes
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                });
         </script>
     </body>
 </html>

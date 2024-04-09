@@ -1,285 +1,276 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Place Details</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            :root {
-                --bs-dark: #121212;
-                --bs-dark-bright: #2a2a2a;
-                --bs-primary: #bb86fc;
-                --bs-secondary: #03dac6;
-            }
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+        --bs-dark: #121212;
+        --bs-dark-bright: #2a2a2a;
+        --bs-primary: #bb86fc;
+        --bs-secondary: #03dac6;
+    }
+    
+    body {
+        background-color: var(--bs-dark);
+        color: white;
+    }
+    
+    .card,
+    .btn,
+    .form-control {
+        background-color: var(--bs-dark-bright);
+        border-color: var(--bs-primary);
+        color: white;
+    }
+    
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.75);
+        opacity: 1;
+    }
+    
+    a,
+    a:visited {
+        color: var(--bs-primary);
+    }
+    
+    a:hover {
+        color: var(--bs-secondary);
+    }
+    
+    .loading-animation {
+        width: 100%;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2em;
+        color: var(--bs-secondary);
+    }
+    
+    @keyframes spinner {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    
+    .spinner:before {
+        content: '';
+        box-sizing: border-box;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 50px;
+        height: 50px;
+        margin-top: -25px;
+        margin-left: -25px;
+        border-radius: 50%;
+        border-top: 2px solid var(--bs-secondary);
+        border-right: 2px solid transparent;
+        animation: spinner .6s linear infinite;
+    }
+    
+    .posts-masonry {
+        column-count: 3;
+        column-gap: 1rem;
+    }
+    
+    .post-card {
+        display: 'flex';
+        width: 100%;
+        margin-bottom: 1rem;
+        -webkit-column-break-inside: avoid; /* Chrome, Safari, Opera */
+        page-break-inside: avoid;            /* Firefox */
+        break-inside: avoid-column;       
+    }
+    
+    .post-card .card-body {
+        padding: 1.0rem;
+        background-color: #1e1e1e;
+        border-radius: 0.5rem;
+    }
+    
+    .post-title {
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+    
+    .post-link {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    
+    .link-preview {
+        margin-top: 1rem;
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+    
+    .link-preview img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.5s ease;
+    }
+    
+    .link-preview:hover img {
+        transform: scale(1.05);
+    }
+    
+    .link-description {
+        padding: 0.5rem;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    
+    .post-card:hover .link-description {
+        opacity: 1;
+    }
+    
+    .post-card {
+        margin-bottom: 2rem;
+    }
+    
+    .modal-content {
+        background-color: var(--bs-dark-bright);
+        color: white;
+        border-color: var(--bs-primary);
+    }
+    
+    .btn-close {
+        filter: invert(1);
+    }
+    
+    .modal-header {
+        border-bottom-color: var(--bs-primary);
+    }
+    
+    .modal-footer {
+        border-top-color: var(--bs-primary);
+    }
+    
+    .form-control {
+        background-color: var(--bs-dark);
+        color: white;
+        border-color: var(--bs-primary);
+    }
+    
+    .btn-secondary,
+    .btn-primary {
+        border-color: var(--bs-primary);
+    }
+    
+    .upvote {
+        width: 24px;
+        height: 24px;
+        border: 0;
+        background: url(/images/up-arrow.png);
+        background-size: 24px;
+    }
+    
+    .upvotebtn {
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 0;
+        margin-bottom: 8px;
+        margin-left: 10px;
+        background: none;
+    }
+    
+    .voteNum {
+        margin-right: 10px;
+        color: var(--bs-secondary);
+    }
+    
+    /* .upvotebtn:hover {
+    background-color: aliceblue;
+            } */
+    /* Responsive layout for smaller screens */
+    @media (max-width: 768px) {
+        .posts-masonry {
+            column-count: 1;
+        }
+    }
+  </style>
+</head>
 
-            body {
-                background-color: var(--bs-dark);
-                color: white;
-            }
-
-            .card,
-            .btn,
-            .form-control {
-                background-color: var(--bs-dark-bright);
-                border-color: var(--bs-primary);
-                color: white;
-            }
-
-            .form-control::placeholder {
-                color: rgba(255, 255, 255, 0.75);
-                opacity: 1;
-            }
-
-            a,
-            a:visited {
-                color: var(--bs-primary);
-            }
-
-            a:hover {
-                color: var(--bs-secondary);
-            }
-
-            .loading-animation {
-                width: 100%;
-                height: 200px;
-                background: rgba(255, 255, 255, 0.2);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 2em;
-                color: var(--bs-secondary);
-            }
-
-            @keyframes spinner {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-
-            .spinner:before {
-                content: '';
-                box-sizing: border-box;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 50px;
-                height: 50px;
-                margin-top: -25px;
-                margin-left: -25px;
-                border-radius: 50%;
-                border-top: 2px solid var(--bs-secondary);
-                border-right: 2px solid transparent;
-                animation: spinner .6s linear infinite;
-            }
-
-            .posts-masonry {
-                column-count: 2;
-                column-gap: 1rem;
-            }
-
-            .post-card {
-                display: inline-block;
-                width: 100%;
-                margin-bottom: 1rem;
-                break-inside: avoid;
-            }
-
-            .post-card .card-body {
-                padding: 1.0rem;
-                background-color: #1e1e1e;
-                border-radius: 0.5rem;
-            }
-
-            .post-title {
-                color: white;
-                margin-bottom: 0.5rem;
-            }
-
-            .post-link {
-                display: block;
-                margin-bottom: 0.5rem;
-            }
-
-            .link-preview {
-                margin-top: 1rem;
-                position: relative;
-                overflow: hidden;
-                border-radius: 0.5rem;
-                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            }
-
-            .link-preview img {
-                width: 100%;
-                height: auto;
-                transition: transform 0.5s ease;
-            }
-
-            .link-preview:hover img {
-            transform: scale(1.05);
-            }
-
-            .link-description {
-                padding: 0.5rem;
-                background: rgba(0, 0, 0, 0.7);
-                color: white;
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                opacity: 0;
-                transition: opacity 0.5s ease;
-            }
-
-            .link-preview:hover .link-description {
-                opacity: 1;
-            }
-
-            .post-card {
-                margin-bottom: 2rem;
-            }
-
-            .modal-content {
-                background-color: var(--bs-dark-bright);
-                color: white;
-                border-color: var(--bs-primary);
-            }
-
-            .btn-close {
-                filter: invert(1);
-            }
-
-            .modal-header {
-                border-bottom-color: var(--bs-primary);
-            }
-
-            .modal-footer {
-                border-top-color: var(--bs-primary);
-            }
-
-            .form-control {
-                background-color: var(--bs-dark);
-                color: white;
-                border-color: var(--bs-primary);
-            }
-
-            .btn-secondary,
-            .btn-primary {
-                border-color: var(--bs-primary);
-            }
-
-            .upvote {
-                width: 24px;
-                height: 24px;
-                border: 0;
-                background: url(/images/up-arrow.png);
-                background-size: 24px;
-            }
-
-            .upvotebtn {
-                width: 24px;
-                height: 24px;
-                padding: 0;
-                border: 0;
-                margin-bottom: 8px;
-                margin-left: 10px;
-                background: none;
-            }
-
-            .voteNum {
-                margin-right: 10px;
-                color: var(--bs-secondary);
-            }
-
-            /* .upvotebtn:hover {
-            background-color: aliceblue;
-        } */
-            /* Responsive layout for smaller screens */
-            @media (max-width: 768px) {
-                .posts-masonry {
-                    column-count: 1;
-                }
-            }
-        </style>
-    </head>
-    <body class="bg-dark text-light">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">Trek</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item" th:if="${session.user == null}">
-                            <a class="nav-link" th:href="@{/login(placeGeohash=${placeGeohash})}">Login</a>
-                        </li>
-                        <li class="nav-item dropdown" th:if="${session.user != null}">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span th:text="${session.user.username}">Username</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                                <li>
-                                    <a class="dropdown-item" th:href="'/profile?username=' + ${session.user.username}">Profile</a>
-                                    <a class="dropdown-item" href="/logout">Logout</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div class="container mt-5">
-            <h1 class="mb-4" th:text="${place.name}">Place Name</h1>
-            <h2 class="mb-4">Posts</h2>
-            <div th:if="${session.user != null}" class="card p-4 mb-5">
-                <form action="/addPost" method="post">
-                    <input type="hidden" class="form-control" name="placeGeohash" th:value="${placeGeohash}">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" name="title" placeholder="Title">
-                    </div>
-                    <div class="mb-3">
-                        <textarea class="form-control" name="content" placeholder="Link" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Post</button>
-                </form>
-            </div>
-            <!-- Masonry-like posts grid -->
-            <div class="posts-masonry">
-                <div th:each="post : ${posts}" class="post-card card">
-                    <div class="card-body">
-                        <div class="postinfo" style="display: flex; justify-content: flex-start; align-items: center;">
-                            <h5 class="post-title" th:text="${post.title}" style="margin-left: 10px;">Post Title</h5>
-                            <form action="/upvote" method="post" th:if="${session.user != null and (votesMap.containsKey(post.id) ? !votesMap.get(post.id) : true)}">
-                                <input type="hidden" name="placeGeohash" th:value="${placeGeohash}">
-                                <input type="hidden" name="postId" th:value="${post.id}" />
-                                <input type="hidden" name="username" th:value="${session.user.username}" />
-                                <button type="submit" class="upvotebtn">
-                                    <div title="Upvote" class="upvote"></div>
-                                </button>
-                            </form>
-                        </div>
-                        <div style="height:24px; display: flex; justify-content: flex-end;">
-                            <span th:text="'Number of votes: ' + ${post.vote}" class="voteNum">Vote</span>
-                        </div>
-                        <div class="link-preview">
-                            <!-- Loading animation placeholder -->
-                            <div class="loading-animation spinner" th:id="'loading-' + ${post.id}"></div>
-                            <img th:id="'preview-image-' + ${post.id}" src="" alt="Link Preview" style="display: none;">
-                            <div class="link-description" style="display: none;">
-
-                                <a class="post-link" th:href="${post.content}" th:text="${post.content}" target="_blank">Link</a>
-                                <a style="color: var(--bs-secondary);" th:href="'/profile?username=' + ${post.user}" th:text="${post.user}">Username</a>
-
-                                <div th:if="${session.user != null && (session.user.username == post.user || session.user.username == 'admin')}" class="edit-delete-buttons" style="padding-top: 15px;">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary edit-post-btn" data-bs-toggle="modal" data-bs-target="#editPostModal" th:attr="data-post-id=${post.id},data-post-title=${post.title},data-post-content=${post.content}">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger delete-post-btn" th:attr="data-post-id=${post.id}">Delete</button>
+<body class="bg-dark text-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid"> <a class="navbar-brand" href="/">Trek</a> <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item" th:if="${session.user == null}"> <a class="nav-link" th:href="@{/login(placeGeohash=${placeGeohash})}">Login</a> </li>
+          <li class="nav-item dropdown" th:if="${session.user != null}"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span th:text="${session.user.username}">Username</span> </a>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+              <li> <a class="dropdown-item" th:href="'/profile?username=' + ${session.user.username}">Profile</a> <a class="dropdown-item" href="/logout">Logout</a> </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container mt-5">
+    <h1 class="mb-4" th:text="${place.name}">Place Name</h1>
+    <h2 class="mb-4">Posts</h2>
+    <div th:if="${session.user != null}" class="card p-4 mb-5">
+      <form action="/addPost" method="post"> <input type="hidden" class="form-control" name="placeGeohash" th:value="${placeGeohash}">
+        <div class="mb-3"> <input type="text" class="form-control" name="title" placeholder="Title"> </div>
+        <div class="mb-3"> <textarea class="form-control" name="content" placeholder="Link" rows="3"></textarea> </div> <button type="submit" class="btn btn-primary">Add Post</button>
+      </form>
+    </div> <!-- Masonry-like posts grid -->
+    <div th:each="entry : ${postsByDate}"> <br>
+        <h2 th:text="${#temporals.format(entry.key, 'dd MMMM yyyy')}"></h2> <!-- Display the date -->
+                <br>
+                <div class="posts-masonry">
+                    <div th:each="post : ${entry.value}" class="post-card card" th:data-post-id="${post.id}" th:data-post-content="${post.content}">
+                        <div class="card-body">
+                            <div class="postinfo" style="display: flex; justify-content: flex-start; align-items: center;">
+                                <h5 class="post-title" th:text="${post.title}" style="margin-left: 10px;">Post Title</h5>
+                                <form action="/upvote" method="post" th:if="${session.user != null and (votesMap.containsKey(post.id) ? !votesMap.get(post.id) : true)}">
+                                    <input type="hidden" name="placeGeohash" th:value="${placeGeohash}">
+                                    <input type="hidden" name="postId" th:value="${post.id}" />
+                                    <input type="hidden" name="username" th:value="${session.user.username}" />
+                                    <button type="submit" class="upvotebtn">
+                                        <div title="Upvote" class="upvote"></div>
+                                    </button>
+                                </form>
+                            </div>
+                            <div style="height:24px; display: flex; justify-content: flex-end;">
+                                <span th:text="'Number of votes: ' + ${post.vote}" class="voteNum">Vote</span>
+                            </div>
+                            <div class="link-preview">
+                                <!-- Loading animation placeholder -->
+                                <div class="loading-animation spinner" th:id="'loading-' + ${post.id}"></div>
+                                <img th:id="'preview-image-' + ${post.id}" src="" alt="Link Preview" style="display: none;">
+                                <div class="link-description">
+                                    <a class="post-link" th:href="${post.content}" th:text="${post.content}" target="_blank">Link</a>
+                                    <a style="color: var(--bs-secondary);" th:href="'/profile?username=' + ${post.user}" th:text="${post.user}">Username</a>
+                                    
+                                    <div th:if="${session.user != null && (session.user.username == post.user || session.user.username == 'admin')}" class="edit-delete-buttons" style="padding-top: 15px;">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary edit-post-btn" data-bs-toggle="modal" data-bs-target="#editPostModal" th:attr="data-post-id=${post.id},data-post-title=${post.title},data-post-content=${post.content}">Edit</button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger delete-post-btn" th:attr="data-post-id=${post.id}">Delete</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+
+            <br>
             <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
                 <a href="/" class="btn btn-secondary">Back to Places</a>
                 <!-- Message for users who are not logged in -->
@@ -290,25 +281,46 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script type="module" src="link-preview.min.js"></script>
-        <script type="module" th:inline="javascript">
-            import {
-                getLinkPreview
-            } from './link-preview.min.js';
-            var posts = /*[[${posts}]]*/ [];
-            posts.forEach(function(post) {
-                getLinkPreview(post.content, {
-                    proxyUrl: 'https://corsproxy.io/?'
-                }).then(function(data) {
-                    var previewImage = document.getElementById('preview-image-' + post.id);
-                    var loadingAnimation = document.getElementById('loading-' + post.id);
-                    var linkDescription = previewImage.nextElementSibling;
-                    previewImage.src = data.images[0];
-                    previewImage.style.display = 'block';
-                    linkDescription.style.display = 'block';
-                    loadingAnimation.style.display = 'none';
-                })
+        <script type="module">
+            import { getLinkPreview } from './link-preview.min.js';
+        
+            document.addEventListener('DOMContentLoaded', function() {
+                // Iterate over each post card directly
+                document.querySelectorAll('.post-card').forEach(function(card) {
+                    const postId = card.dataset.postId; // Use dataset to access data-post-id
+                    const postContent = card.dataset.postContent; // Use dataset to access data-post-content
+        
+                    getLinkPreview(postContent, {
+                        proxyUrl: 'https://corsproxy.io/?'
+                    }).then(function(data) {
+                        const previewImage = document.getElementById('preview-image-' + postId);
+                        const loadingAnimation = document.getElementById('loading-' + postId);
+                        if (data.images && data.images[0] && previewImage) {
+                            previewImage.src = data.images[0];
+                            previewImage.onload = function() {
+                                loadingAnimation.style.display = 'none';
+                                previewImage.style.display = 'block';
+                            };
+                        } else {
+                            displayFallbackImage(postId);
+                        }
+                    }).catch(function() {
+                        displayFallbackImage(postId);
+                    });
+                });
             });
+        
+            function displayFallbackImage(postId) {
+                const previewImage = document.getElementById('preview-image-' + postId);
+                const loadingAnimation = document.getElementById('loading-' + postId);
+                if (loadingAnimation && previewImage) {
+                    loadingAnimation.style.display = 'none';
+                    previewImage.src = '/images/question_mark.png'; // Ensure this path is correct
+                    previewImage.style.display = 'block';
+                }
+            }
         </script>
+        
         <div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="editPostModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

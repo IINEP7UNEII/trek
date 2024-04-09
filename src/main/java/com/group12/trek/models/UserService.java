@@ -16,4 +16,14 @@ public class UserService {
     public User saveUser(User user) {
         return userRepository.save(user);
     }
+
+    public void updateUserBioAndLink(String username, String bio, String link) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            user.setBio(bio);
+            user.setLink(link);
+            userRepository.save(user);
+        }
+    }
 }
+

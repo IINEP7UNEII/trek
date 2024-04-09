@@ -12,9 +12,15 @@ import com.group12.trek.models.VoteService;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -65,14 +71,23 @@ public class PlaceController {
     public String viewPlace(@RequestParam String placeGeohash, Model model, HttpSession session) {
         Object loggedInUser = session.getAttribute("user");
 
+        // Fetch posts and sort by postDate and vote
         List<Post> posts = postService.findByPlaceGeohash(placeGeohash);
-        posts.sort(Comparator.comparingInt(Post::getVote).reversed());
-        model.addAttribute("posts", posts);
+        // This will sort posts by date first, then by votes for each date.
+        posts.sort(Comparator.comparing(Post::getPostDate).reversed()
+                            .thenComparing(Comparator.comparing(Post::getVote).reversed()));
+        // Group by date
+        Map<LocalDate, List<Post>> postsByDate = posts.stream()
+        .collect(Collectors.groupingBy(
+            post -> post.getPostDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), 
+            LinkedHashMap::new, 
+            Collectors.toList()
+        ));
+        model.addAttribute("postsByDate", postsByDate);
         model.addAttribute("placeGeohash", placeGeohash);
-
+    
         placeService.findByGeohash(placeGeohash).ifPresent(place -> {
-            model.addAttribute("place", place); // Add the entire place object
-            // model.addAttribute("placeName", place.getName());
+            model.addAttribute("place", place);
         });
 
         if (loggedInUser != null) {
@@ -123,22 +138,27 @@ public class PlaceController {
     public String addPost(@RequestParam String placeGeohash, @RequestParam String title, @RequestParam String content,
             HttpSession session) {
         Object loggedInUser = session.getAttribute("user"); // Get the user from the session
-
+    
         if (loggedInUser == null) {
             // Handle the case where there is no logged-in user
             return "redirect:/login";
         }
-
+    
         User user = (User) loggedInUser;
-
+    
         Post post = new Post();
         post.setPlaceGeohash(placeGeohash);
         post.setUser(user.getUsername());
         post.setTitle(title);
         post.setContent(content);
-        // Set other properties as needed
+    
+        // Set timestamp and postDate
+        long currentTimeMillis = System.currentTimeMillis(); // Current time in milliseconds
+        post.setTimestamp(currentTimeMillis / 1000); // Convert milliseconds to seconds for Unix timestamp
+        post.setPostDate(new Date(currentTimeMillis)); // java.util.Date object representing now
+    
         postService.save(post);
         return "redirect:/place?placeGeohash=" + placeGeohash;
     }
-
+    
 }
