@@ -53,5 +53,4 @@ public class PostService {
     public boolean existsById(Long id) {
         return postRepository.existsById(id);
     }
-
 }
