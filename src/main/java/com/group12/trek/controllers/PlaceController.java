@@ -32,6 +32,8 @@ public class PlaceController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CommentRepository CommentRepo;
     public PlaceController(PlaceService placeService, PostService postService) {
         this.placeService = placeService;
         this.postService = postService;
@@ -59,10 +61,11 @@ public class PlaceController {
     public String viewPlace(@RequestParam String placeGeohash, Model model, HttpSession session) {
         Object loggedInUser = session.getAttribute("user");
 
+   
         List<Post> posts = postService.findByPlaceGeohash(placeGeohash);
         posts.sort(Comparator.comparing(Post::getPostDate).reversed()
             .thenComparing(Comparator.comparing(Post::getVote).reversed()));
-
+        
         Map<LocalDate, List<Post>> postsByDate = posts.stream()
         .collect(Collectors.groupingBy(
             post -> post.getPostDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), 
@@ -71,7 +74,10 @@ public class PlaceController {
         ));
         model.addAttribute("postsByDate", postsByDate);
         model.addAttribute("placeGeohash", placeGeohash);
-    
+
+        List<Comment> comments = CommentRepo.findAll();
+        model.addAttribute("ct", comments);
+
         placeService.findByGeohash(placeGeohash).ifPresent(place -> {
             model.addAttribute("place", place);
         });
@@ -91,46 +97,47 @@ public class PlaceController {
     @GetMapping("/profile")
     public String visitProfile(@RequestParam String username, Model model, HttpSession session) {
             
-            User user_passed_in = userService.findUserByUsername(username);
+        User user_passed_in = userService.findUserByUsername(username);
 
-            Map<Long, Boolean> votesMap = new HashMap<>();
+        Map<Long, Boolean> votesMap = new HashMap<>();
 
-            List<Post> posts = postService.findByUsername(username);
+        List<Post> posts = postService.findByUsername(username);
 
-            posts.sort(Comparator.comparingInt(Post::getVote).reversed());
-            model.addAttribute("posts", posts);
+        posts.sort(Comparator.comparingInt(Post::getVote).reversed());
+        model.addAttribute("posts", posts);
 
-            posts.forEach(post -> votesMap.put(post.getId(),
-                voteService.hasVoted(username, post.getId())));
-
-            model.addAttribute("votesMap", votesMap);
-            model.addAttribute("user", user_passed_in);
+        posts.forEach(post -> votesMap.put(post.getId(),
+            voteService.hasVoted(username, post.getId())));
+        
+        model.addAttribute("votesMap", votesMap);
+        model.addAttribute("user", user_passed_in);
 
         return "profile";
     }
 
     @PostMapping("/addPost")
     public String addPost(@RequestParam String placeGeohash, @RequestParam String title, @RequestParam String content,
-    HttpSession session) {
-        Object loggedInUser = session.getAttribute("user");
-    
-        if (loggedInUser == null) {
-            return "redirect:/login";
-        }
-    
-        User user = (User) loggedInUser;
-    
-        Post post = new Post();
-        post.setPlaceGeohash(placeGeohash);
-        post.setUser(user.getUsername());
-        post.setTitle(title);
-        post.setContent(content);
-    
-        long currentTimeMillis = System.currentTimeMillis();
-        post.setTimestamp(currentTimeMillis / 1000);
-        post.setPostDate(new Date(currentTimeMillis));
-    
-        postService.save(post);
+        HttpSession session) {
+            Object loggedInUser = session.getAttribute("user"); 
+
+            if (loggedInUser == null) {
+                return "redirect:/login";
+            }
+
+            User user = (User) loggedInUser;
+
+            Post post = new Post();
+            post.setPlaceGeohash(placeGeohash);
+            post.setUser(user.getUsername());
+            post.setTitle(title);
+            post.setContent(content);
+
+            long currentTimeMillis = System.currentTimeMillis(); 
+            post.setTimestamp(currentTimeMillis / 1000); 
+            post.setPostDate(new Date(currentTimeMillis)); 
+
+            postService.save(post);
         return "redirect:/place?placeGeohash=" + placeGeohash;
     }
+    
 }
