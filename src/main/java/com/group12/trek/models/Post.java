@@ -20,15 +20,15 @@ public class Post {
     @Column(name = "place_geohash")
     private String placeGeohash;
     private String postId;
-    @Column(name = "user_name") // Renamed column
+    @Column(name = "user_name")
     private String user;
     private Long timestamp;
-    @Column(name = "post_date")  // Renamed column
+    @Column(name = "post_date")
     private Date postDate;
     private String type;
     private String title;
     private String content;
-    private int vote; // count number of upvote
+    private int vote;
 
     @ManyToOne
     @JoinColumn(name = "place_geohash", referencedColumnName = "geohash", insertable = false, updatable = false)
@@ -122,7 +122,6 @@ public class Post {
         this.vote = vote;
     }
 
-    // upvote
     public void upVote() {
         this.vote++;
     }
