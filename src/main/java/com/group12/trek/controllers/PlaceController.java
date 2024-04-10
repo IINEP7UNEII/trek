@@ -1,12 +1,6 @@
 package com.group12.trek.controllers;
 
-import com.group12.trek.models.Place;
-import com.group12.trek.models.PlaceService;
-import com.group12.trek.models.Post;
-import com.group12.trek.models.PostService;
-import com.group12.trek.models.User;
-import com.group12.trek.models.UserService;
-import com.group12.trek.models.VoteService;
+import com.group12.trek.models.*;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -30,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class PlaceController {
     private final PlaceService placeService;
-    private final PostService postService; // Declare PostService
+    private final PostService postService;
 
     @Autowired
     VoteService voteService;
@@ -38,7 +32,6 @@ public class PlaceController {
     @Autowired
     private UserService userService;
 
-    // Modify the constructor to include PostService
     public PlaceController(PlaceService placeService, PostService postService) {
         this.placeService = placeService;
         this.postService = postService;
@@ -48,9 +41,6 @@ public class PlaceController {
     public String listPlaces(Model model) {
         List<Place> places = placeService.findAll();
         model.addAttribute("places", places);
-
-        // Add a log statement to check if places are found
-        System.out.println("Places: " + places);
 
         return "index";
     }
@@ -69,12 +59,10 @@ public class PlaceController {
     public String viewPlace(@RequestParam String placeGeohash, Model model, HttpSession session) {
         Object loggedInUser = session.getAttribute("user");
 
-        // Fetch posts and sort by postDate and vote
         List<Post> posts = postService.findByPlaceGeohash(placeGeohash);
-        // This will sort posts by date first, then by votes for each date.
         posts.sort(Comparator.comparing(Post::getPostDate).reversed()
-                            .thenComparing(Comparator.comparing(Post::getVote).reversed()));
-        // Group by date
+            .thenComparing(Comparator.comparing(Post::getVote).reversed()));
+
         Map<LocalDate, List<Post>> postsByDate = posts.stream()
         .collect(Collectors.groupingBy(
             post -> post.getPostDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), 
@@ -94,12 +82,6 @@ public class PlaceController {
             Map<Long, Boolean> votesMap = new HashMap<>();
             posts.forEach(post -> votesMap.put(post.getId(),
                     voteService.hasVoted(username, post.getId())));
-            // for (Post post : posts) {
-            // votesMap.put(post.getId(), voteService.hasVoted(username, post.getId()));
-            // }
-            // for (Map.Entry<Long, Boolean> entry : votesMap.entrySet()) {
-            //     System.out.println("Post ID: " + entry.getKey() + ", Has Voted: " + entry.getValue());
-            // }
             model.addAttribute("votesMap", votesMap);
         }
 
@@ -119,13 +101,8 @@ public class PlaceController {
             model.addAttribute("posts", posts);
 
             posts.forEach(post -> votesMap.put(post.getId(),
-                    voteService.hasVoted(username, post.getId())));
-            // for (Post post : posts) {
-            // votesMap.put(post.getId(), voteService.hasVoted(username, post.getId()));
-            // }
-            // for (Map.Entry<Long, Boolean> entry : votesMap.entrySet()) {
-            //     System.out.println("Post ID: " + entry.getKey() + ", Has Voted: " + entry.getValue());
-            // }
+                voteService.hasVoted(username, post.getId())));
+
             model.addAttribute("votesMap", votesMap);
             model.addAttribute("user", user_passed_in);
 
@@ -134,11 +111,10 @@ public class PlaceController {
 
     @PostMapping("/addPost")
     public String addPost(@RequestParam String placeGeohash, @RequestParam String title, @RequestParam String content,
-            HttpSession session) {
-        Object loggedInUser = session.getAttribute("user"); // Get the user from the session
+    HttpSession session) {
+        Object loggedInUser = session.getAttribute("user");
     
         if (loggedInUser == null) {
-            // Handle the case where there is no logged-in user
             return "redirect:/login";
         }
     
@@ -150,13 +126,11 @@ public class PlaceController {
         post.setTitle(title);
         post.setContent(content);
     
-        // Set timestamp and postDate
-        long currentTimeMillis = System.currentTimeMillis(); // Current time in milliseconds
-        post.setTimestamp(currentTimeMillis / 1000); // Convert milliseconds to seconds for Unix timestamp
-        post.setPostDate(new Date(currentTimeMillis)); // java.util.Date object representing now
+        long currentTimeMillis = System.currentTimeMillis();
+        post.setTimestamp(currentTimeMillis / 1000);
+        post.setPostDate(new Date(currentTimeMillis));
     
         postService.save(post);
         return "redirect:/place?placeGeohash=" + placeGeohash;
     }
-    
 }
