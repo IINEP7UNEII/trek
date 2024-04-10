@@ -83,8 +83,8 @@
         display: 'flex';
         width: 100%;
         margin-bottom: 1rem;
-        -webkit-column-break-inside: avoid; 
-        page-break-inside: avoid;            
+        -webkit-column-break-inside: avoid; /* Chrome, Safari, Opera */
+        page-break-inside: avoid;            /* Firefox */
         break-inside: avoid-column;       
     }
     
@@ -193,6 +193,10 @@
         color: var(--bs-secondary);
     }
     
+    /* .upvotebtn:hover {
+    background-color: aliceblue;
+            } */
+    /* Responsive layout for smaller screens */
     @media (max-width: 768px) {
         .posts-masonry {
             column-count: 1;
@@ -201,7 +205,7 @@
 
     div.wrapper-flex {
     display: flex;
-    flex-wrap:nowrap; 
+    flex-wrap:nowrap; /* this is default */
     }
   </style>
 </head>
@@ -402,7 +406,7 @@
                                     
                                     <textarea name="content" style="float: left;" rows="5" cols="40" class="form-control" id="exampleFormControlTextarea1" > </textarea>
                                     <input type="hidden" name="placeGeohash" th:value="${placeGeohash}"></input>
-                                    <input type="hidden" name="PostId" th:value="${post.id}"></input>
+                                    <input type="hidden" name="PostId" th:value="${post.id}" id="PostIDforComment"></input>
                                     <input type="hidden" name="username" th:value="${session.user.username}"></input>
                                     <button type="submit" class="btn btn-primary" style="float: right;" >Submit</button>
                                 </form>
@@ -471,6 +475,7 @@
 
                         var commentBody = document.getElementById('comment-body');
                         commentBody.innerHTML = "";
+                        document.getElementById('PostIDforComment').value = postId;
                         comment.forEach(function(a){
                         if(a.postId==postId){
                             
