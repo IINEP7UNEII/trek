@@ -1,4 +1,5 @@
 package com.group12.trek.controllers;
+<<<<<<< Updated upstream
 import com.group12.trek.models.Place;
 import com.group12.trek.models.PlaceService;
 import com.group12.trek.models.Post;
@@ -13,11 +14,16 @@ import com.group12.trek.models.CommentService;
 import com.group12.trek.models.Post;
 import com.group12.trek.models.PostService;
 import com.group12.trek.models.User;
+=======
+
+import com.group12.trek.models.*;
+>>>>>>> Stashed changes
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+<<<<<<< Updated upstream
 import jakarta.servlet.http.HttpSession;
 
 import java.util.Comparator;
@@ -38,6 +44,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
+=======
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+>>>>>>> Stashed changes
 
 
 @Controller

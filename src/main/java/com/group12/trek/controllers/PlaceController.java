@@ -45,7 +45,11 @@ public class PlaceController {
 
     @Autowired
     private CommentRepository CommentRepo;
+<<<<<<< Updated upstream
     // Modify the constructor to include PostService
+=======
+
+>>>>>>> Stashed changes
     public PlaceController(PlaceService placeService, PostService postService) {
         this.placeService = placeService;
         this.postService = postService;
@@ -56,8 +60,12 @@ public class PlaceController {
         List<Place> places = placeService.findAll();
         model.addAttribute("places", places);
 
+<<<<<<< Updated upstream
         // Add a log statement to check if places are found
         System.out.println("Places: " + places);
+=======
+
+>>>>>>> Stashed changes
 
         return "index";
     }
@@ -76,12 +84,20 @@ public class PlaceController {
     public String viewPlace(@RequestParam String placeGeohash, Model model, HttpSession session) {
         Object loggedInUser = session.getAttribute("user");
 
+<<<<<<< Updated upstream
         // Fetch posts and sort by postDate and vote
+=======
+   
+>>>>>>> Stashed changes
         List<Post> posts = postService.findByPlaceGeohash(placeGeohash);
         // This will sort posts by date first, then by votes for each date.
         posts.sort(Comparator.comparing(Post::getPostDate).reversed()
                             .thenComparing(Comparator.comparing(Post::getVote).reversed()));
+<<<<<<< Updated upstream
         // Group by date
+=======
+        
+>>>>>>> Stashed changes
         Map<LocalDate, List<Post>> postsByDate = posts.stream()
         .collect(Collectors.groupingBy(
             post -> post.getPostDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), 
@@ -102,12 +118,16 @@ public class PlaceController {
             Map<Long, Boolean> votesMap = new HashMap<>();
             posts.forEach(post -> votesMap.put(post.getId(),
                     voteService.hasVoted(username, post.getId())));
+<<<<<<< Updated upstream
             // for (Post post : posts) {
             // votesMap.put(post.getId(), voteService.hasVoted(username, post.getId()));
             // }
             // for (Map.Entry<Long, Boolean> entry : votesMap.entrySet()) {
             //     System.out.println("Post ID: " + entry.getKey() + ", Has Voted: " + entry.getValue());
             // }
+=======
+
+>>>>>>> Stashed changes
             model.addAttribute("votesMap", votesMap);
         }
 
@@ -128,12 +148,16 @@ public class PlaceController {
 
             posts.forEach(post -> votesMap.put(post.getId(),
                     voteService.hasVoted(username, post.getId())));
+<<<<<<< Updated upstream
             // for (Post post : posts) {
             // votesMap.put(post.getId(), voteService.hasVoted(username, post.getId()));
             // }
             // for (Map.Entry<Long, Boolean> entry : votesMap.entrySet()) {
             //     System.out.println("Post ID: " + entry.getKey() + ", Has Voted: " + entry.getValue());
             // }
+=======
+
+>>>>>>> Stashed changes
             model.addAttribute("votesMap", votesMap);
             model.addAttribute("user", user_passed_in);
 
@@ -143,7 +167,11 @@ public class PlaceController {
     @PostMapping("/addPost")
     public String addPost(@RequestParam String placeGeohash, @RequestParam String title, @RequestParam String content,
             HttpSession session) {
+<<<<<<< Updated upstream
         Object loggedInUser = session.getAttribute("user"); // Get the user from the session
+=======
+        Object loggedInUser = session.getAttribute("user"); 
+>>>>>>> Stashed changes
     
         if (loggedInUser == null) {
             // Handle the case where there is no logged-in user
@@ -158,10 +186,16 @@ public class PlaceController {
         post.setTitle(title);
         post.setContent(content);
     
+<<<<<<< Updated upstream
         // Set timestamp and postDate
         long currentTimeMillis = System.currentTimeMillis(); // Current time in milliseconds
         post.setTimestamp(currentTimeMillis / 1000); // Convert milliseconds to seconds for Unix timestamp
         post.setPostDate(new Date(currentTimeMillis)); // java.util.Date object representing now
+=======
+        long currentTimeMillis = System.currentTimeMillis(); 
+        post.setTimestamp(currentTimeMillis / 1000); 
+        post.setPostDate(new Date(currentTimeMillis)); 
+>>>>>>> Stashed changes
     
         postService.save(post);
         return "redirect:/place?placeGeohash=" + placeGeohash;
