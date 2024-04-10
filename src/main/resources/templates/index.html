@@ -147,8 +147,8 @@
     </script>
 
     <script type="module">
-        var HomeLatitude = 0;
-        var HomeLongitude = 0;
+        var homeLatitude = 0;
+        var homeLongitude = 0;
         var currLongitude = 0;
         var currLatitude = 0;
         var tempLatitude = 0;
@@ -165,13 +165,13 @@
             navigator.geolocation.getCurrentPosition(success)
 
             function success(position) {
-                HomeLatitude = position.coords.latitude;
-                HomeLongitude = position.coords.longitude;
-                map.setView([HomeLatitude, HomeLongitude], 11);
+                homeLatitude = position.coords.latitude;
+                homeLongitude = position.coords.longitude;
+                map.setView([homeLatitude, homeLongitude], 11);
             }
 
             L.easyButton('<span class="star">&target;</span>', function() {
-                map.setView([ HomeLatitude,  HomeLongitude], 11);
+                map.setView([ homeLatitude,  homeLongitude], 11);
             }, 'Zoom To Home').addTo(map);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
