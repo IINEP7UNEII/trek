@@ -20,51 +20,49 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PlaceController.class)
 public class PlaceControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
 
-  @Autowired
-  private MockMvc mockMvc;
+    @Autowired
+    private PlaceController placeController;
 
-  @Autowired
-  private PlaceController placeController;
+    @MockBean
+    private PlaceService placeService;
 
-  @MockBean
-  private PlaceService placeService;
+    @MockBean
+    private PostService postService;
 
-  @MockBean
-  private PostService postService;
+    @MockBean
+    private VoteService voteService;
 
-  @MockBean
-  private VoteService voteService;
+    @MockBean
+    private UserService userService;
 
-  @MockBean
-  private UserService userService;
+    @BeforeAll
+    static void setup() {
+        System.out.println("Setting up");
+    }
 
-  @BeforeAll
-  static void setup() {
-    System.out.println("Setting up");
-  }
+    @Test
+    void testContextLoads() throws Exception {
+        assertNotNull(placeController);
+    }
 
-  @Test
-  void testContextLoads() throws Exception {
-    assertNotNull(placeController);
-  }
+    @Test
+    void testListPlaces() throws Exception {
+        mockMvc.perform(get("/"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("index"))
+            .andExpect(model().attributeExists("places"));
+    }
 
-  @Test
-  void testListPlaces() throws Exception {
-    mockMvc.perform(get("/"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("index"))
-        .andExpect(model().attributeExists("places"));
-  }
-
-  @Test
-  void testAddPlaces() throws Exception {
-    mockMvc.perform(post("/addPlace")
-        .param("geohash", "c2b86ft5x6vz")
-        .param("name", "SFU")
-        .param("description", " boring ass place"))
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl("/"));
-  }
-
+    @Test
+    void testAddPlaces() throws Exception {
+        mockMvc.perform(post("/addPlace")
+            .param("geohash", "c2b86ft5x6vz")
+            .param("name", "SFU")
+            .param("description", " boring ass place"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/"));
+    }
 }
