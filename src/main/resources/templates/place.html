@@ -401,13 +401,13 @@
                     <div class="modal-footer">
                 
                         <div class="collapse mb-3" id="addCommentForm">
-                            <div class="mb-3" th:if="${session.user != null}">
+                            <div class="mb-3">
                                 <form action="/addComment" method="post">
                                     
                                     <textarea name="content" style="float: left;" rows="5" cols="40" class="form-control" id="exampleFormControlTextarea1" > </textarea>
                                     <input type="hidden" name="placeGeohash" th:value="${placeGeohash}"></input>
-                                    <input type="hidden" name="PostId" th:value="${post.id}" id="PostIDforComment"></input>
-                                    <input type="hidden" name="username" th:value="${session.user.username}"></input>
+                                    <input type="hidden" name="PostId"  id="PostIDforComment"></input>
+                                    <input type="hidden" name="username" id="UsernameforComment"></input>
                                     <button type="submit" class="btn btn-primary" style="float: right;" >Submit</button>
                                 </form>
                             </div>
@@ -476,6 +476,14 @@
                         var commentBody = document.getElementById('comment-body');
                         commentBody.innerHTML = "";
                         document.getElementById('PostIDforComment').value = postId;
+                        if(session.user!=null){
+                            document.getElementById('UsernameforComment').value = session.user.username;
+                            document.getElementById('addCommentBtn').style.visibility="visible";
+                            document.getElementById('NoLoginComment').style.visibility="collapse";
+                        }else{
+                            document.getElementById('UsernameforComment').value ="Anonymous";
+                        }
+                        
                         comment.forEach(function(a){
                         if(a.postId==postId){
                             
