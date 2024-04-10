@@ -13,45 +13,55 @@
             --bs-primary: #bb86fc;
             --bs-secondary: #03dac6;
         }
+
         body {
             background-color: var(--bs-dark);
             color: white;
         }
+
         .card, .btn, .form-control {
             background-color: var(--bs-dark-bright);
             border-color: var(--bs-primary);
             color: white;
         }
+
         .form-control::placeholder {
             color: rgba(255, 255, 255, 0.75);
             opacity: 1;
         }
+
         a, a:visited {
             color: var(--bs-primary);
         }
+
         a:hover {
             color: var(--bs-secondary);
         }
+
         .post-card {
             margin-bottom: 1rem;
             border: none;
             border-radius: 0.5rem;
         }
+
         .post-card .card-body {
             padding: 1.0rem;
             background-color: #1e1e1e;
             border-radius: 0.5rem;
         }
+        
         .post-title {
             color: white;
             margin-bottom: 0.5rem;
         }
+
         .post-link {
             display: block;
             margin-bottom: 0.5rem;
         }
     </style>
 </head>
+
 <body class="bg-dark text-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -68,7 +78,6 @@
                 <div class="card p-4">
                     <h2 class="mb-4">Register</h2>
                     <form action="/users/register" method="post">
-                        <!-- Error message display -->
                         <div th:if="${error}" class="alert alert-danger" th:text="${error}">Username already exists.</div>
                         <div class="mb-3">
                             <input type="text" class="form-control" name="username" placeholder="Username" required>
