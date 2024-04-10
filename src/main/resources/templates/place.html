@@ -295,7 +295,6 @@
         <script type="module" src="link-preview.min.js"></script>
         <script type="module">
             import { getLinkPreview } from './link-preview.min.js';
-        
             document.addEventListener('DOMContentLoaded', function() {
                 // Iterate over each post card directly
                 document.querySelectorAll('.post-card').forEach(function(card) {
@@ -320,6 +319,7 @@
                         displayFallbackImage(postId);
                     });
                 });
+                
             });
         
             function displayFallbackImage(postId) {
@@ -378,17 +378,20 @@
             </div>
         </div>
         
-        <div th:each="entry : ${postsByDate}"> <br>
         
-        <div class="modal fade" id="commentPostModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true" th:each="post : ${entry.value}" th:data-post-id="${post.id}" >
+                                
+    </div>
+    <div th:each="entry : ${postsByDate}"> <br>
+        
+        <div class="modal fade" id="commentPostModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true" th:each="post : ${entry.value}"  >
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        
                         <h5 class="modal-title" id="commentPostModalLabel">Comments</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <a>Comments would ideally go here</a>
+                    <div class="modal-body" id="comment-body">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="addCommentBtn" data-bs-target="#addCommentForm" data-bs-toggle="collapse" aria-expanded="false" aria-controls="addCommentForm">Add Comment</button>
@@ -413,12 +416,12 @@
                 </div>
             </div>
         </div>
-                                
     </div>
+    
         <script th:inline="javascript">
             /*<![CDATA[*/
             var session = /*[[${session}]]*/[];
-            var comment = /*[[${comments}]]*/[];
+            var comment = /*[[${ct}]]*/[];
             /*]]>*/      
         </script>
         <script type="text/javascript">
@@ -485,5 +488,29 @@
             });
             
         </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.post-card').forEach(function(card) {
+                    // console.log(increment++," ",card.dataset.postId);
+                    comment.forEach(function(a){
+                        if(a.postId==card.dataset.postId){
+                            console.log("a.postId="+a.postId+" card.dataset.postId="+card.dataset.postId+" should match");
+                            var commentUsername = document.createElement("a");
+                            var newLineBreak = document.createElement("br");
+                            var commentContent = document.createElement("a");
+
+                            commentUsername.innerHTML = a.username;
+                            commentUsername.href = "/profile?username=" + a.username;
+                            commentContent.innerHTML = ":"+a.content;
+                            document.getElementById('comment-body').insertBefore(commentUsername,null);
+                            document.getElementById('comment-body').insertBefore(commentContent,null);
+                            document.getElementById('comment-body').insertBefore(newLineBreak,null);
+                        }
+                });
+                })
+
+            });
+        </script>
     </body>
 </html>
+

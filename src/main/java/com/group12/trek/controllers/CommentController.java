@@ -63,21 +63,10 @@ public class CommentController {
         return "redirect:/place?placeGeohash=" +placeGeohash;
     }
 
-    // @ModelAttribute("comments")
-    // public List<Comment> showAllComments() {
-    //     List<Comment> comments = commentService.findAllComments();
-    //     if (comments.isEmpty()) {
-    //         Date currDate = new Date();
-    //         Long postId = 89L;
-    //         comments.add(new Comment("Hekki", currDate, postId, "AAAAAAAAAA"));
-    //     }
-    //     return comments;
-    // }
-
     @RequestMapping(value = "comments", method = RequestMethod.GET)
-    public String messages(Model model) {
+    public String commentAll(Model model) {
         List<Comment> comments = CommentRepo.findAll();
-        model.addAttribute("comments", comments);
+        model.addAttribute("ct", comments);
         return "commentsList";
     }
     

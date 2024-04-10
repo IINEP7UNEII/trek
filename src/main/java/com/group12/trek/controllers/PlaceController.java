@@ -8,6 +8,9 @@ import com.group12.trek.models.User;
 import com.group12.trek.models.UserRepository;
 import com.group12.trek.models.UserService;
 import com.group12.trek.models.VoteService;
+import com.group12.trek.models.Comment;
+import com.group12.trek.models.CommentRepository;
+import com.group12.trek.models.CommentService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -40,6 +43,8 @@ public class PlaceController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CommentRepository CommentRepo;
     // Modify the constructor to include PostService
     public PlaceController(PlaceService placeService, PostService postService) {
         this.placeService = placeService;
@@ -85,7 +90,8 @@ public class PlaceController {
         ));
         model.addAttribute("postsByDate", postsByDate);
         model.addAttribute("placeGeohash", placeGeohash);
-    
+        List<Comment> comments = CommentRepo.findAll();
+        model.addAttribute("ct", comments);
         placeService.findByGeohash(placeGeohash).ifPresent(place -> {
             model.addAttribute("place", place);
         });
