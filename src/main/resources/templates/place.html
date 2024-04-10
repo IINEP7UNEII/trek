@@ -392,6 +392,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="comment-body">
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="addCommentBtn" data-bs-target="#addCommentForm" data-bs-toggle="collapse" aria-expanded="false" aria-controls="addCommentForm">Add Comment</button>
@@ -476,6 +477,24 @@
                         console.log("Post ID:", postId);
                         console.log("Post Title:", postTitle);
                         console.log("Post Content:", postContent);
+                        var commentBody = document.getElementById('comment-body');
+                        commentBody.innerHTML = "";
+                        comment.forEach(function(a){
+                        if(a.postId==postId){
+                            
+                            console.log("a.postId="+a.postId+" card.dataset.postId="+postId+" should match");
+                            var commentUsername = document.createElement("a");
+                            var newLineBreak = document.createElement("br");
+                            var commentContent = document.createElement("a");
+
+                            commentUsername.innerHTML = a.username;
+                            commentUsername.href = "/profile?username=" + a.username;
+                            commentContent.innerHTML = ":"+a.content;
+                            commentBody.insertBefore(commentUsername,null);
+                            commentBody.insertBefore(commentContent,null);
+                            commentBody.insertBefore(newLineBreak,null);
+                        }
+                 });
                         if(session.user==undefined){
                             document.getElementById('addCommentBtn').style.visibility="collapse";
                             document.getElementById('NoLoginComment').style.visibility="visible";
@@ -489,27 +508,13 @@
             
         </script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                document.querySelectorAll('.post-card').forEach(function(card) {
-                    // console.log(increment++," ",card.dataset.postId);
-                    comment.forEach(function(a){
-                        if(a.postId==card.dataset.postId){
-                            console.log("a.postId="+a.postId+" card.dataset.postId="+card.dataset.postId+" should match");
-                            var commentUsername = document.createElement("a");
-                            var newLineBreak = document.createElement("br");
-                            var commentContent = document.createElement("a");
+            // document.addEventListener('DOMContentLoaded', function() {
+            //     document.querySelectorAll('.post-card').forEach(function(card) {
+            //         // console.log(increment++," ",card.dataset.postId);
+                    
+            //     })
 
-                            commentUsername.innerHTML = a.username;
-                            commentUsername.href = "/profile?username=" + a.username;
-                            commentContent.innerHTML = ":"+a.content;
-                            document.getElementById('comment-body').insertBefore(commentUsername,null);
-                            document.getElementById('comment-body').insertBefore(commentContent,null);
-                            document.getElementById('comment-body').insertBefore(newLineBreak,null);
-                        }
-                });
-                })
-
-            });
+            // });
         </script>
     </body>
 </html>
