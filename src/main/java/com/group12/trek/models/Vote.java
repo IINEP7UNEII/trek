@@ -9,46 +9,41 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "votes")
 public class Vote {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long vid;
-  private String userName;
-  private Long postId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long vid;
+    private String userName;
+    private Long postId;
 
-  // Constructors
-  public Vote() {
+    public Vote() {}
 
-  }
+    public Vote(Long vid, String userName, Long postId) {
+        this.vid = vid;
+        this.userName = userName;
+        this.postId = postId;
+    }
 
-  public Vote(Long vid, String userName, Long postId) {
-    this.vid = vid;
-    this.userName = userName;
-    this.postId = postId;
-  }
+    public Long getVid() {
+        return vid;
+    }
 
-  // Getters and Setters
-  public Long getVid() {
-    return vid;
-  }
+    public void setVid(Long vid) {
+        this.vid = vid;
+    }
 
-  public void setVid(Long vid) {
-    this.vid = vid;
-  }
+    public String getUserName() {
+        return userName;
+    }
 
-  public String getUserName() {
-    return userName;
-  }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
-  }
+    public Long getPostId() {
+        return postId;
+    }
 
-  public Long getPostId() {
-    return postId;
-  }
-
-  public void setPostId(Long postId) {
-    this.postId = postId;
-  }
-
+    public void setPostId(Long postId) {
+        this.postId = postId;
+    }
 }
