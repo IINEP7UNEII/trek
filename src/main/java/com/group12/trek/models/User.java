@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-
 @Entity
 @Table(name = "users")
 public class User {
@@ -21,7 +20,6 @@ public class User {
     private String bio;
     private String link;
 
-    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -62,4 +60,3 @@ public class User {
         this.link = newLink;
     }
 }
-
