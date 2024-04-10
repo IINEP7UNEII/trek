@@ -285,7 +285,7 @@
             <br>
             <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
                 <a href="/" class="btn btn-secondary">Back to Places</a>
-                <!-- Message for users who are not logged in -->
+               
                 <div th:if="${session.user == null}">
                     <p style="color: rgba(3, 218, 198, 0.5); font-style: italic; margin-bottom: 0;">Wanna post or upvote? <a th:href="@{/login(placeGeohash=${placeGeohash})}" style="color: var(--bs-primary);">Login!</a></p></p>
                 </div>
@@ -296,10 +296,10 @@
         <script type="module">
             import { getLinkPreview } from './link-preview.min.js';
             document.addEventListener('DOMContentLoaded', function() {
-                // Iterate over each post card directly
+
                 document.querySelectorAll('.post-card').forEach(function(card) {
-                    const postId = card.dataset.postId; // Use dataset to access data-post-id
-                    const postContent = card.dataset.postContent; // Use dataset to access data-post-content
+                    const postId = card.dataset.postId;
+                    const postContent = card.dataset.postContent;
                     
                     getLinkPreview(postContent, {
                         proxyUrl: 'https://corsproxy.io/?'
@@ -327,7 +327,7 @@
                 const loadingAnimation = document.getElementById('loading-' + postId);
                 if (loadingAnimation && previewImage) {
                     loadingAnimation.style.display = 'none';
-                    previewImage.src = '/images/question_mark.png'; // Ensure this path is correct
+                    previewImage.src = '/images/question_mark.png'; 
                     previewImage.style.display = 'block';
                 }
             }
@@ -469,20 +469,15 @@
                         var postTitle = button.getAttribute('data-post-title');
                         var postContent = button.getAttribute('data-post-content');
                         
-                        // Set the post title in the modal
+
                         document.getElementById('commentPostModalLabel').innerText = "Comments for "+ postTitle;
                         document.getElementsByName('CommentDate').value=Date();
-                        // Here you can do whatever you need with postId, postTitle, postContent
-                        // For now, let's just log them to console
-                        console.log("Post ID:", postId);
-                        console.log("Post Title:", postTitle);
-                        console.log("Post Content:", postContent);
+
                         var commentBody = document.getElementById('comment-body');
                         commentBody.innerHTML = "";
                         comment.forEach(function(a){
                         if(a.postId==postId){
                             
-                            console.log("a.postId="+a.postId+" card.dataset.postId="+postId+" should match");
                             var commentUsername = document.createElement("a");
                             var newLineBreak = document.createElement("br");
                             var commentContent = document.createElement("a");
@@ -508,13 +503,7 @@
             
         </script>
         <script>
-            // document.addEventListener('DOMContentLoaded', function() {
-            //     document.querySelectorAll('.post-card').forEach(function(card) {
-            //         // console.log(increment++," ",card.dataset.postId);
-                    
-            //     })
 
-            // });
         </script>
     </body>
 </html>
