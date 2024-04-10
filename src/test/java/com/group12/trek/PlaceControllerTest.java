@@ -1,18 +1,13 @@
 package com.group12.trek;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.hamcrest.Matchers.*;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.group12.trek.controllers.PlaceController;
 import com.group12.trek.models.PlaceService;
@@ -20,18 +15,8 @@ import com.group12.trek.models.PostService;
 import com.group12.trek.models.UserService;
 import com.group12.trek.models.VoteService;
 
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.mockito.Mockito.when;
-import org.hamcrest.Matchers;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @WebMvcTest(PlaceController.class)
 public class PlaceControllerTest {

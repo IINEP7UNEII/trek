@@ -1,7 +1,5 @@
 package com.group12.trek.models;
 
-import com.group12.trek.models.Place;
-import com.group12.trek.models.PlaceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
