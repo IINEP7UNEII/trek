@@ -6,11 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-<<<<<<< Updated upstream
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-=======
->>>>>>> Stashed changes
 import jakarta.persistence.Table;
 
 @Entity

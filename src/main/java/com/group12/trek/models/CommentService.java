@@ -4,13 +4,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
-<<<<<<< Updated upstream
-// import org.springframework.beans.factory.annotation.Autowired;
-import com.group12.trek.models.Comment;
-import com.group12.trek.models.CommentRepository;
-import org.springframework.stereotype.Service;
-=======
->>>>>>> Stashed changes
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
